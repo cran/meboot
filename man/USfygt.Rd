@@ -8,7 +8,7 @@
     Data set employed in Murray (2006, pp.795-797) to test the null hypothesis that per capita federal deficits explain long-term Treasury bond interest rates based on the Stock and Watson's dynamic OLS model.
    }
 
-   \format{A .rda file storing the data as \code{ts} objects within a list. Attach the list object to access to the data directly by their names reported below.}
+   \format{A .rda file storing the data as an \code{mts} object.}
 
    \usage{
       data (USfygt)

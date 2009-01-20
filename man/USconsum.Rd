@@ -8,7 +8,7 @@
     Data set employed in Murray (2006, pp.46-47, 799-801) to discuss the Keynesian consumption function on the basis of the Friedman's permanent income hypothesis and Robert Hall's model.
    }
 
-   \format{A .rda file storing the data as \code{ts} objects within a list. Attach the list object to access to the data directly by their names reported below.}
+   \format{A .rda file storing the data as an \code{mts} object.}
 
    \usage{
       data (USconsum)

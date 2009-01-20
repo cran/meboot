@@ -1,5 +1,6 @@
 
 useDynLib(meboot)
 
-export(expand.sd, force.clt, meboot, 
-  panel.meboot, slider.mts, zero.ci)
+export(expand.sd, force.clt,
+  meboot, meboot.default, meboot.pdata.frame,
+  null.ci, olsHALL.b, slider.mts, zero.ci)

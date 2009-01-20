@@ -1,5 +1,7 @@
 
-panel.meboot  <- function(x, reps, colsubj, coldata, coltimes,...)
+meboot.pdata.frame <- function(x, reps=999, trim=0.10, reachbnd=TRUE,
+  expand.sd=TRUE, force.clt=TRUE, elaps=FALSE, 
+  colsubj, coldata, coltimes, ...)
 {
   ref1 <- x[,colsubj]
   ref2 <- unique(ref1)
@@ -8,8 +10,9 @@ panel.meboot  <- function(x, reps, colsubj, coldata, coltimes,...)
   for(i in seq(along=ref2)){
     ir <- which(ref1==ref2[i])
     xs <- x[ir,coldata]  
-    bxs <- meboot(xs, reps=reps,...)
-    xens <- rbind(xens, bxs$ensemble)
+    bxs <- meboot(xs, reps=reps, trim=0.10, reachbnd=reachbnd,
+      expand.sd=expand.sd, force.clt=force.clt, elaps=elaps, ...)
+    xens <- rbind(xens, bxs$ensemble) 
   }
 
   xens <- data.frame(xens)
@@ -19,4 +22,3 @@ panel.meboot  <- function(x, reps, colsubj, coldata, coltimes,...)
 
   xens
 }
-  

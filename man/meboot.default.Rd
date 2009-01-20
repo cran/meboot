@@ -1,28 +1,25 @@
-\name{meboot}
- \alias{meboot}
+\name{meboot.default}
+ \alias{meboot.default}
   \title{Generate Maximum Entropy Bootstrapped Time Series Ensemble}
 
   \description{
-    Generates maximum entropy bootstrap replicates for dependent data. (See details.)
+    This function generates maximum entropy bootstrap replicates for dependent data. (See details.)
   }
 
   \usage{
-    meboot (x, reps=999, trim=0.10, reachbnd=TRUE,
-  expand.sd=TRUE, force.clt=TRUE, elaps=FALSE, colsubj, coldata, coltimes, ...)
+    meboot.default (x, reps=999, trim=0.10, reachbnd=TRUE,
+  expand.sd=TRUE, force.clt=TRUE, elaps=FALSE, ...)
   }
 
   \arguments{
-    \item{x}{vector of data, \code{ts} object or \code{pdata.frame} object.}
+    \item{x}{a vector of data or a time series object.}
     \item{reps}{number of replicates to generate.}
     \item{trim}{the trimming proportion.}
-    \item{reachbnd}{logical. If TRUE potentially reached bounds (xmin = smallest value - trimmed mean and xmax=largest value + trimmed mean) are given when the random draw happens to be equal to 0 and 1, respectively.
+    \item{reachbnd}{logical. If \code{TRUE} potentially reached bounds (xmin = smallest value - trimmed mean and xmax=largest value + trimmed mean) are given when the random draw happens to be equal to 0 and 1, respectively.
     }
     \item{expand.sd}{logical. If TRUE the standard deviation in the ensemble in expanded. See \code{\link{expand.sd}}.}
     \item{force.clt}{logical.If TRUE the ensemble is forced to satisfy the central limit theorem. See \code{\link{force.clt}}.}
     \item{elaps}{logical. If TRUE elapsed time during computations is displayed.}
-    \item{colsubj}{the column in \code{x} that contains the individual index. It is ignored if the input data \code{x} is not a \code{pdata.frame} object.}
-    \item{coldata}{the column in \code{x} that contains the data of the variable to create the ensemble. It is ignored if the input data \code{x} is not a \code{pdata.frame} object.}
-    \item{coltimes}{an optional argument indicating the column that contains the times at which the observations for each individual are observed. It is ignored if the input data \code{x} is not a \code{pdata.frame} object.}
     \item{...}{possible argument \code{fiv} to be passed to \code{\link{expand.sd}}.}
   }
 
@@ -59,7 +56,8 @@
     Vinod, H.D. (2006), Maximum Entropy Ensembles for Time Series Inference in Economics,
 \emph{Journal of Asian Economics}, \bold{17}(6), pp. 955-978
 
-    Vinod, H.D. (2004), Ranking mutual funds using unconventional utility theory and stochastic dominance, \emph{Journal of Empirical Finance}, \bold{11}(3), pp. 353-377.
+    Vinod, H.D. (2004), Ranking mutual funds using unconventional utility theory and stochastic dominance, \emph{Journal of Empirical Finance}, \bold{11}(3), 353-377.
+
   }
 
   \examples{

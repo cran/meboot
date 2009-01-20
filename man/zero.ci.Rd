@@ -3,7 +3,7 @@
   \title{Get Confidence Interval Around Zero}
 
   \description{
-    Function to get sided confidence interval around zero as the true value. Confidence interval is adjusted so that it covers the true zero (1-'confl')*100 times. Symmetry is not assumed.
+    Function to get two sided confidence interval around zero as the true value. Confidence interval is adjusted so that it covers the true zero (1-'confl')*100 times. Symmetry is not assumed.
   }
 
   \usage{

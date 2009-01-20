@@ -1,6 +1,12 @@
 
-meboot <- function(x, reps, trim=0.10, reachbnd=FALSE, 
-  expand.sd=FALSE, force.clt=FALSE, elaps=FALSE,...)
+meboot <- function(x, reps=999, trim=0.10, reachbnd=TRUE,
+  expand.sd=TRUE, force.clt=TRUE, elaps=FALSE,
+  colsubj, coldata, coltimes, ...){
+  UseMethod("meboot", x)
+}
+
+meboot.default <- function(x, reps=999, trim=0.10, reachbnd=TRUE,
+  expand.sd=TRUE, force.clt=TRUE, elaps=FALSE, ...)
 {
   ptm1 <- proc.time()
 
@@ -44,7 +50,7 @@ meboot <- function(x, reps, trim=0.10, reachbnd=FALSE,
 
   ensemble <- matrix(x, nrow=n, ncol=reps)
   ensemble <- apply(ensemble, 2, meboot.part,
-                n, z, p, xmin, xmax, desintxb, reachbnd)
+                n, z, xmin, xmax, desintxb, reachbnd)
 
   # So far the object 'ensemble' contains the quantiles.
   # Now give them time series dependence and heterogeneity.
@@ -58,7 +64,7 @@ meboot <- function(x, reps, trim=0.10, reachbnd=FALSE,
   #ensemble[ordxx$ix,] <- qseq
 
   if(expand.sd)
-    ensemble <- expand.sd(x=x, ensemble=ensemble,...)
+    ensemble <- expand.sd(x=x, ensemble=ensemble, ...)
   if(force.clt)
     ensemble <- force.clt(x=x, ensemble=ensemble)
 
@@ -79,7 +85,7 @@ meboot <- function(x, reps, trim=0.10, reachbnd=FALSE,
        xmax=xmax, desintxb=desintxb, ordxx=ordxx, elaps=elapsr)
 }
 
-meboot.part <- function(x, n, z, p, xmin, xmax, desintxb, reachbnd)
+meboot.part <- function(x, n, z, xmin, xmax, desintxb, reachbnd)
 {
   # Generate random numbers from the [0,1] uniform interval
 

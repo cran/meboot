@@ -1,0 +1,975 @@
+\documentclass[nojss]{jss}
+\usepackage{multirow,thumbpdf}
+
+\author{Hrishikesh D. Vinod\\Fordham University
+   \And Javier L\'opez-de-Lacalle\\Universidad del Pa\'is Vasco}
+\Plainauthor{Hrishikesh D. Vinod, Javier L\'opez-de-Lacalle}
+
+\title{Maximum Entropy Bootstrap for Time Series: The \pkg{meboot} \proglang{R} Package}
+\Plaintitle{Maximum Entropy Bootstrap for Time Series: The meboot R Package}
+\Shorttitle{\pkg{meboot}: Maximum Entropy Bootstrap for Time Series}
+
+\Abstract{
+  This introduction to the \proglang{R} package \pkg{meboot} is a (slightly)
+  modified version of \cite{Vinod+Lopez-de-Lacalle:2009}, published in the
+  \emph{Journal of Statistical Software}.
+
+  The maximum entropy bootstrap is an algorithm that creates an ensemble for time series 
+  inference. Stationarity is not required and the ensemble satisfies the ergodic theorem and 
+  the central limit theorem. The \pkg{meboot} \proglang{R} package implements such algorithm. 
+  This document introduces the procedure and illustrates its scope by means 
+  of several guided applications.
+}
+
+\Keywords{time series, dependent data, bootstrap, \proglang{R}}
+\Plainkeywords{time series, dependent data, bootstrap, R}
+
+\Address{
+  Hrishikesh D. Vinod\\
+  Fordham University\\
+  Department of Economics, Institute of Ethics and Economic Policy\\  
+  Bronx, NY 10458, United States of America\\
+  E-mail: \email{Vinod@fordham.edu}\\
+  URL: \url{http://www.fordham.edu/economics/vinod/}\\
+
+  Javier L\'opez-de-Lacalle\\
+  Universidad del Pa\'is Vasco\\
+  Facultad de Ciencias Econ\'omicas y Empresariales\\
+  48015 Bilbao, Spain\\
+  E-mail: \email{javlacalle@yahoo.es}\\
+  URL: \url{http://www.bl.ehu.es/~jedlobej/}
+}
+
+%% need no \usepackage{Sweave}
+\SweaveOpts{keep.source=TRUE}
+<<echo=FALSE, results=hide>>=
+options(prompt = "R> ", digits = 4, continue = "+  ")
+@
+%\VignetteIndexEntry{Maximum Entropy Bootstrap for Time Series: The meboot R Package}
+%\VignetteDepends{meboot,car,lmtest,dynlm,boot,hdrcde,plm}
+%\VignetteKeywords{time series, dependent data, bootstrap, R}
+%\VignettePackage{meboot}
+
+\begin{document}
+
+
+%%%%%%%%    %%%%%%%%    %%%%%%%%    %%%%%%%%    %%%%%%%%    %%%%%%%%
+
+\section{Introduction}
+
+%%%%%%%%    %%%%%%%%    %%%%%%%%    %%%%%%%%    %%%%%%%%    %%%%%%%%
+
+This paper illustrates the use of the \pkg{meboot} \proglang{R} package for \proglang{R}
+\citep{Rproject}.
+The package \pkg{meboot} implements the maximum entropy bootstrap algorithm for 
+time series described in \citet{Vinod:04, Vinod:06}. The package can be obtained 
+from the  Comprehensive \proglang{R} Archive Network at 
+\url{http://CRAN.R-project.org/package=meboot}.
+
+In  the traditional theory, an ensemble $\Omega$ 
+represents the population from which the observed time series is drawn. The maximum 
+entropy (ME) bootstrap constructs a large number of replicates ($J=999$, say) as 
+elements of $\Omega$ for inference using a seven-step algorithm designed to satisfy 
+the  ergodic theorem (the grand mean of all ensembles is close to the sample mean). 
+The algorithm's practical appeal is that it avoids all structural change and unit root 
+type testing involving complicated asymptotics and all shape-destroying transformations 
+like de-trending or differencing to achieve stationarity. The constructed 
+ensemble elements retain the basic shape and time dependence structure of the autocorrelation 
+function (ACF) and the partial autocorrelation function (PACF) of the original time series.
+
+This discussion collects relevant portions of \citet{Vinod:04, Vinod:06} as templates for 
+users of the \pkg{meboot} package.  Let us begin with some motivation. Wiener, Kolmogorov 
+and Khintchine \citep[WKK,][]{Wiener:30, Kolmogorov:31, Khintchine:34}, among others, 
+developed the stationary model in the 1930's where the data 
+$x_t$ arise from the $\Omega$ mentioned above.
+Stationary time series are integrated of 
+order zero, I(0).  Many real world applications involve a mixture of I(0) and 
+nonstationary I($d$) series, where the order of integration d can be different for 
+different series and even fractional, and where the stationarity assumptions are 
+difficult to verify. The situation is much worse in the presence of regime switching 
+structural changes and other jump discontinuities occurring 
+at arbitrary times. The WKK theory mostly needs the zero memory I(0) 
+white noise type processes, where some WKK results are true only for circular processes, 
+implying that we can go back in history, 
+(e.g., undo the US Securities and Exchange Commission,
+the Federal Communications Commission,
+or go back to horse and buggy, pre $9/11$ days, etc.). 
+Irreversibility is an important property of most economic time series, making the 
+assumption of zero memory I(0) process quite unrealistic. Actually, social science 
+systems are often dynamic, complex and adaptive leading to irreversible, non-stationary 
+and sometimes rather short time series. Hence Economists often need: (i) `non-standard' 
+Dickey-Fuller type sampling distributions for testing regression coefficients 
+(with severe inference problems for panel data), and (ii) detrending and differencing 
+to convert such series to stationarity. The motivation then is to achieve greater 
+flexibility and realism by avoiding both (i) and (ii).  
+
+\citet{Vinod:04, Vinod:06} offers a computer intensive construction of a plausible ensemble 
+created from a density satisfying the maximum entropy principle.  The 
+ME bootstrap algorithm uses 
+quantiles $x_{j,t}$ for $j=1,\dots,J$ ($J=999$, say), of the ME density as members 
+of $\Omega$ from the inverse of its `empirical' cumulative distribution function (CDF). 
+The algorithm guarantees the satisfaction of the ergodic theorem (grand mean of all 
+$x_{j,t}$ representing the ensemble average equals the time average of $x_t$) and 
+the central limit theorem.
+
+Some authors try to bring realism by testing and allowing for finite `structural changes', 
+often with \textit{ad hoc} tools. However, the notion of infinite memory of the random walk 
+I(1) is unrealistic because the very definitions of economic series (e.g., 
+quality and content of the gross domestic product, names of stocks in the 
+Dow Jones average) change over finite (relatively short) time intervals. 
+Changing definitions are generally not a problem in natural sciences. 
+For example, the definition of water or the height of an ocean wave is 
+unchanged over time. 
+
+%%%%%%%%    %%%%%%%%    %%%%%%%%    %%%%%%%%    %%%%%%%%    %%%%%%%%
+
+\section{Maximum entropy bootstrap}
+
+%%%%%%%%    %%%%%%%%    %%%%%%%%    %%%%%%%%    %%%%%%%%    %%%%%%%%
+
+The bootstrap studies the
+relation between the sample and the (unknown) population by a
+comparable relation between the sample at hand and
+appropriately designed (observable) resamples.  If the observed sample is 
+independent and identially distributed (iid),
+$x_1,. . .  x_T$ are iid random variables with a common original density: $F$. 
+The joint density of the sample is given by a $T$-fold product: $F^T$. If
+$\hat \theta_T$ estimates a parameter $\theta$, the unknown sampling distribution
+of ($\hat \theta_T - \theta$) is given by the conditional distribution of
+its bootstrap version ($\theta^* - \hat \theta_T$), \citet{Lahiri:03}.
+This section describes the ME bootstrap algorithm and indicates how it
+extends the traditional iid bootstrap to nonstationary dependent data.
+
+\subsection{The algorithm}
+
+An overview of the steps in Vinod's ME bootstrap algorithm to create a random realization 
+of $x_t$ is provided in this subsection.
+The reader should consult the toy example of the next subsection for concreteness. 
+
+\begin{enumerate}
+\item Sort the original data in increasing order to create order statistics $x_{(t)}$ and store 
+the ordering index vector.
+\item Compute intermediate points $z_t=(x_{(t)} + x_{(t+1)})/2$ for $t=1, \dots, T-1$ 
+from the order statistics.
+\item Compute the trimmed mean $m_\mathrm{trm}$ of deviations 
+$x_t - x_{t-1}$ among all consecutive observations. 
+Compute the lower limit for left tail as $z_0=x_{(1)} - m_\mathrm{trm}$ 
+and upper limit for right tail as $z_T= x_{(T)} + m_\mathrm{trm}$. These limits 
+become the limiting intermediate points. 
+\item Compute the mean of the maximum entropy density within each interval such that the 
+`mean-preserving constraint' (designed to eventually satisfy the ergodic theorem) 
+is satisfied. Interval means are denoted as $m_t$. The means for the 
+first and the last interval have simpler formulas.
+\item Generate random numbers from the $[0,1]$ uniform interval, 
+compute sample quantiles of the ME density at those points and sort them.
+\item Reorder the sorted sample quantiles by using the ordering index of step 1. 
+This recovers the time dependence relationships of the originally observed data.
+\item Repeat steps 2 to 6 several times (e.g., $999$).
+\end{enumerate}
+
+\subsection{A toy example}
+
+The procedure described above is illustrated with a small example. Let the sequence 
+$x_t=(4,12,36,20,8)$ be the series of data observed from the period $t=1$ to $t=5$ as 
+indicated in the first two columns in Table \ref{Tt5ex}. We jointly sort these two columns 
+on the second column and place the result in the next two columns 
+(Table \ref{Tt5ex} columns 3 and 4), giving us the ordering index 
+vector in column 3.
+
+Next, the four intermediate points in Column 5 are seen to be simple averages of 
+consecutive order statistics. 
+We need two more (limiting) `intermediate' points. 
+These are obtained as described in Step 3 above. Using  10\% trimming, the limiting 
+intermediate values are $z_0=-11$ and $z_T=51$. With these six $z_t$ values we build 
+our five half open intervals: 
+$U(-11,6]\times U(6,10]\times U(10,16]\times U(16,28]\times U(28,51]$.
+The maximum entropy density of the ME bootstrap is defined as the combination of $T$ 
+uniform densities defined over (the support of) $T$ half open intervals.
+
+\begin{table}[ht]
+\centering
+\small{
+\begin{tabular}{lllllllll}
+\\
+\hline
+\multirow{3}{0.7cm}{Time} & \multirow{3}{0.5cm}{$x_t$} & 
+\multirow{3}{1.2cm}{Ordering vector} & \multirow{3}{1cm}{Sorted $x_t$} & 
+\multirow{3}{1.3cm}{Interme-diate points} & \multirow{3}{1.3cm}{Desired means} & 
+\multirow{3}{1.3cm}{Uniform draws} & \multirow{3}{1.3cm}{Preli-minary values} & 
+\multirow{3}{1.3cm}{Final replicate} \\ \\ \\
+
+\hline
+\multicolumn{1}{c}{1} & \multicolumn{1}{c}{4} &  
+\multicolumn{1}{c}{1} & \multicolumn{1}{c}{4} &
+\multicolumn{1}{c}{6} & \multicolumn{1}{c}{5} & \multicolumn{1}{c}{0.12} & 
+\multicolumn{1}{c}{5.85} & \multicolumn{1}{c}{5.85} \\
+%
+\multicolumn{1}{c}{2} & \multicolumn{1}{c}{12} & \multicolumn{1}{c}{5} & 
+\multicolumn{1}{c}{8} & \multicolumn{1}{c}{10} & \multicolumn{1}{c}{8} & 
+\multicolumn{1}{c}{0.83} & \multicolumn{1}{c}{6.70} & \multicolumn{1}{c}{8.90} \\
+%
+\multicolumn{1}{c}{3} & \multicolumn{1}{c}{36} & \multicolumn{1}{c}{2} & 
+\multicolumn{1}{c}{12} & \multicolumn{1}{c}{16} & \multicolumn{1}{c}{13} & 
+\multicolumn{1}{c}{0.53} & 
+\multicolumn{1}{c}{8.90} &\multicolumn{1}{c}{23.95} \\
+\multicolumn{1}{c}{4} & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{4} & 
+\multicolumn{1}{c}{20} & \multicolumn{1}{c}{28} & \multicolumn{1}{c}{22} & 
+\multicolumn{1}{c}{0.59} & \multicolumn{1}{c}{10.70} & \multicolumn{1}{c}{10.70} \\
+%
+\multicolumn{1}{c}{5} & \multicolumn{1}{c}{8} & \multicolumn{1}{c}{3} & 
+\multicolumn{1}{c}{36} & &
+\multicolumn{1}{c}{32} & \multicolumn{1}{c}{0.11} & \multicolumn{1}{c}{23.95} & 
+\multicolumn{1}{c}{6.70} \\
+\hline
+\end{tabular}
+}
+\caption{\label{Tt5ex} Example of the ME bootstrap algorithm.}
+\end{table}
+
+The ME density is
+shown in Figure~\ref{Ft5ex.density} along with the five
+(half-open) intervals. Note that these intervals join all intermediate points $z_t$ 
+(those in column 5 plus two limiting ones) without gaps. 
+
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=0.5\textwidth]{t5ex_density}
+\end{center}
+\caption{\label{Ft5ex.density} Maximum entropy density for the $x_t=4,12,36,20,8$ example.}
+\end{figure}
+
+The uniform densities are also designed to satisfy the `mean-preserving constraint', 
+by making sure that the interval means for the uniform density, $m_t$, satisfy the
+following relations:
+%
+\begin{eqnarray*}
+m_1 &=& 0.75 x_{(1)} + 0.25 x_{(2)} \,,\quad \hbox{for the lowest interval,} \\
+m_k &=& 0.25 x_{(k-1)} + 0.50 x_{(k)} + 0.25 x_{(k+1)} \,,\quad \hbox{for } k=2,\dots,T-1 \\
+m_T &=& 0.25 x_{(T-1)} + 0.75 x_{(T)} \,,
+\end{eqnarray*}
+%
+where $x_{(t)}$ are the order statistics. The desired means using these formulas for the
+toy example are reported in column 6.
+
+Finally, random numbers from the $[0,1]$ uniform intervals are independently drawn to compute quantiles 
+of the ME density. (See left side plot in Figure~\ref{Ft5ex}.) The ME density quantiles 
+obtained in this way provide a monotonic series. The final replicate is obtained after
+recovering the original order sorting column 8 according to the index order given
+in column 3. (See right side plot in Figure~\ref{Ft5ex}.)
+
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=\textwidth]{t5ex}
+\end{center}
+\caption{\label{Ft5ex} Example of the ME bootstrap algorithm.}
+\end{figure}
+
+\subsection{Contrast with traditional iid bootstrap} \label{sec:contrast}
+
+\citet{Singh:81} used Edgeworth expansions to confirm the superiority 
+of iid boot. He also proved that iid-boot fails for dependent data. 
+See \citet[Chapter~8]{Davison-Hinkley:97} and \citet{Lahiri:03} for more recent
+results. 
+A modification of the iid boot for stationary m-dependent data called 
+the `block bootstrap' is extensively discussed by 
+\citet{Lahiri:03}. However, if the evolutionary data are non-stationary, 
+one cannot always use `differencing' operations to render 
+them stationary.  The ME bootstrap algorithm is more general, since it does
+not assume stationarity and does not need possibly
+ `questionable' differencing operations.
+
+In addition to avoiding stationarity, \citet{Vinod:04, Vinod:06} 
+mentions that it is desirable to avoid the following 
+three properties of traditional iid bootstrap.
+
+\begin{itemize}
+\item The traditional bootstrap sample obtained from shuffling with replacement
+repeats some $x_t$ values while not using as many others. 
+It never admits nearby data values in a resample.
+We are considering applications where there is no reason to believe that values 
+near the observed $x_t$ 
+are impossible.  For example, let $x_t=49.2$. Since $49.19$ or $49.24$, both of which 
+round to $x_t=49.2$, there is no justification for excluding all such values.
+%
+\item The traditional bootstrap resamples must lie in the closed interval 
+$[\hbox{min}(x_t), \hbox{max}(x_t)]$.   
+Since the observed range is random, we cannot rule out somewhat smaller or larger $x_t$.
+Note that the third step of our algorithm implies a less restrictive and wider 
+range $[z_0, z_T]$.  
+%
+\item The traditional bootstrap resample shuffles $x_t$ such that any dependence 
+information in the time series sequence $(x_1, \dots, x_t, x_{t+1}, \dots, x_T)$ is lost 
+in the shuffle.  If we try to restore the original order to the shuffled resample of the 
+traditional bootstrap, we end up with essentially the original set $x_t$, except that 
+some dropped $x_t$ values are replaced by the repeats of adjacent values. Hence, it is 
+impossible to generate a large number J of sensibly distinct resamples with the 
+traditional bootstrap shuffle without admitting nearby values.  
+\end{itemize}
+
+\subsection{Shape retention} 
+
+The $j$-th ME boot resample  $\{x_{j,t} \}$
+retains the shape, or local peaks and troughs, of the original time series 
+{$x_t$}, by being `strongly dependent' on it. We now imagine that the time series 
+$x_t$ represents a set (or bundle) 
+of levels of `utility' enjoyed by someone.  Economic theorists do not like to make 
+interpersonal comparisons of utility, 
+since two persons can never really `feel' exactly the same level of satisfaction.
+Yet economists must compare utilities 
+to make policy recommendations by considering preference orderings based on 
+`ordinal utility theory,' which says that utilities experienced by two individuals 
+can be made comparable to each other, 
+provided the two utility bundles satisfy a common partial ordering. Indeed our ME 
+boot resamples do satisfy a common 
+partial ordering, since their ranks match perfectly.
+
+Imagine that the original $\{x_t\}$ represents the evolving time path for an 
+individual's income, sensitive to initial resources at birth and intellectual 
+endowments with a corresponding path of utility (enjoyment) levels. Our ME boot 
+algorithm creates reincarnations of these paths ensuring that ordinal utilities are 
+comparable across reincarnations, 
+retaining just enough of the basic shape of $x_t$. See \citet{Henderson-Quandt:80} for 
+a discussion of multi-period consumption and ordinal utility.  
+
+
+Next we provide an example of how ME boot retains the shape as well as the periodicity 
+of the original series by using the \code{AirPassengers}
+time series available in \proglang{R}.
+
+\subsubsection[Example: AirPassengers time series]{Example: \code{AirPassengers} time series}
+
+\begin{figure}[t!]
+\begin{center}
+\includegraphics[width=\textwidth]{airp1}
+\end{center}
+\caption{\label{Fairp} Replicate for the \code{AirPassengers} time series.}
+\end{figure}
+
+Figure~\ref{Fairp} displays the \code{AirPassengers} time series 
+along with a replicate of the series. An animation showing different replicates 
+is available as a supplemental AVI file along with \cite{Vinod+Lopez-de-Lacalle:2009}.
+The autocorrelation function and the log-periodogram are shown for each replicate.
+One can see that, retaining the 
+shape of the original series, the replicates remain close to the time and frequency domain 
+properties of the series, without imposing any parametric restrictions.
+
+
+
+%%%%%%%%    %%%%%%%%    %%%%%%%%    %%%%%%%%    %%%%%%%%    %%%%%%%%
+
+\section{Applications}
+
+%%%%%%%%    %%%%%%%%    %%%%%%%%    %%%%%%%%    %%%%%%%%    %%%%%%%%
+
+\subsection{Consumption function}
+
+This example describes how to carry out inference through the ME boot ensemble 
+in the following regression:
+
+\begin{equation}
+\label{Ecnsmptn}
+c_t = \beta_1 + \beta_2\,c_{t-1} + \beta_3\,y_{t-1} + u_t,
+\end{equation}
+%
+for the null hypothesis $\beta_3=0$.
+
+We use the annual data set employed in \citet[pp.~799--801]{Murray:06} to discuss 
+a Keynesian consumption function on the basis of the Friedman's permanent income 
+hypothesis (PIH) and a simpler version of Robert Hall's model. 
+The data are the logarithm of the US consumption, $c_t$, and disposable income, $y_t$, 
+in the period 1948--1998. The packages \pkg{car} \citep{Fox:2002} 
+and \pkg{lmtest} \citep{Zeileis+Hothorn:2002}
+will be useful to extract information from linear regression models. We use
+the interface in package \pkg{dynlm} \citep{dynlm} for dynamic linear regression.
+%
+<<>>=
+library("meboot")
+library("car") 
+library("lmtest")
+library("dynlm")
+data("USconsum")
+USconsum <- log(USconsum)
+lmcf <- dynlm(consum ~ L(consum, 1) + L(dispinc, 1), data = USconsum)
+coeftest(lmcf)
+set.seed(135)
+durbin.watson(model = lmcf, max.lag = 4)
+@
+%
+The residuals are serially uncorrelated since the $p$~values of the 
+generalized Durbin-Watson (DW) statistics up to order 4 are larger than the significance level 0.05. The seed was needed 
+in the above code
+for a reproducible computation of $p$~values for the DW statistics.
+The estimated coefficient of lagged income, $\hat \beta_3=0.027$, 
+with the standard error $se=0.1439,$ is statistically 
+insignificant. The 95\% confidence interval  $(-0.263, 0.316)$ has the zero inside 
+this interval. 
+
+This result was initially interpreted as supporting Friedman's PIH.
+However, the large unit root literature argued that the 
+sampling distribution of $\hat \beta_3$ is nonstandard, and that traditional 
+inference based on the Student's $t$ or asymptotic
+normal distributions may lead to spurious results.
+Hence, these days, one uses unit root tests to decide whether
+differencing or de-trending of $c_t$ and $y_t$ 
+would make all variables in a regression integrated of the same order, say $I(0)$.
+The critical values from a Dickey-Fuller type nonstandard 
+density (originally obtained by a simulation) replace the usual Student's $t$
+critical values. Our bootstrap also reveals any nonstandard features
+of the sampling distribution and confidence intervals 
+specific to the problem at hand, avoiding the use of
+critical values altogether. Thus we can cover a wide variety
+of situations beyond the one simulated
+by Dickey and Fuller.
+
+
+Instead of resampling the residuals, our ME bootstrap
+resamples all time series in the regression themselves
+by following the `resampling cases' bootstrap method. 
+Three advantages of this method
+noted by
+\citet[Section~6.2.4]{Davison-Hinkley:97} 
+are:
+(a) This method does  not use any  simulated errors
+based on the assumed reliability of a parametric model.  
+(b) It does not need
+to assume that the
+conditional mean of the dependent variable given a realization of regressors 
+($E(y |X=x)$ in standard notation) is linear. 
+(c)  It is robust against heteroscedastic errors.
+
+
+Now we briefly describe the `resampling cases' method
+in the context of time series regressions, where
+the `case' refers to time.
+From (\ref{Ecnsmptn}) it is intuitively clear that 
+we should resample
+only the two `original' time series
+$c_t$ and $y_t,$ and then lag them as needed instead
+of blindly resampling
+$(c_t, c_{t-1}, y_{t-1})$  all three variables in the model.  Our bootstrap
+inference will rely on 
+a confidence interval for any function $\theta=f(\beta)$ of coefficients $\beta$.
+For example, $\theta=\beta_3$ for assessing the Friedman hypothesis
+based on (\ref{Ecnsmptn}).  
+
+<<>>=
+theta <- function(y, x) {
+  reg <- dynlm(y ~ L(y, 1) + L(x, 1))
+  thet <- coef(reg)[3]
+  return(thet)
+}
+@
+
+The above code represents our choice of
+simplicity over generality.
+It is intended to be used upon
+replacing the \code{y} by
+$c_t$ and the \code{x} by $y_t,$ 
+for its use as $\theta=\beta_3$ in (\ref{Ecnsmptn}).
+For any other example it
+provides a template, needing modifications.
+If a researcher wishes to analyze 
+the scale elasticity of a Cobb-Douglas type
+production function, \citet[pp.~10--11]{Vinod:08}, 
+the regression becomes $y = \beta_1 x_1 +\beta_2 x_2$.
+Then the parameter of interest:
+$\theta=\beta_1+\beta_2,$ is a sum
+of two slope coefficients.  The modified
+\code{theta} for this example denoted by
+\code{theta.cobbd} is given by  
+the following code:
+%
+<<>>=
+theta.cobbd <- function(y, x1, x2) {
+  reg <- lm(y ~ x1 + x2)
+  thet <- coef(reg)[2] + coef(reg)[3]
+  return(thet)
+}
+@
+
+In general, a modification of \code{theta}
+can involve a nonlinear function
+of several coefficients. For example, \citet[Section~3.2]{Vinod:08}, 
+if the parameter of interest is the
+long-run multiplier, it becomes a nonlinear function.
+The main point is
+that our $\theta$ refers to only one parameter of interest. 
+Any researcher interested in  two or more parameters
+can readily 
+repeat our procedure as often as needed.
+
+The following function 
+called \code{bstar.consu} generates
+a large number of bootstrap single parameter estimates. The \code{bstar} in its name 
+suggests that resamples of the third regression coefficient might be denoted
+as $\{b_3^*\}$.  More important, 
+it is a template, expecting modifications.
+Its initial arguments refer to data on all `original' time series
+(not counting leads and lags as separate series) using the notation
+$y$ for the dependent variable and $x$ for the regressor.  It is flexible,
+allowing the user to choose the 
+confidence level (default: 95\%), the \proglang{R} function
+\code{theta} (defining the parameter of interest must be predefined),
+size of resamples as \code{bigJ} (default: \code{bigJ = 999})
+and the seed
+for random number generator as \code{seed1} (default: \code{seed1 = 135}).
+%
+<<>>=
+bstar.consu <- function(y, x, theta,
+  level = 0.95, bigJ = 999, seed1 = 135) {
+  set.seed(seed1) 
+  semy <- meboot(x = y, reps = bigJ)$ensemble
+  semx <- meboot(x = x, reps = bigJ)$ensemble
+  n <- NROW(y)
+  m <- length(theta(y, x))
+  if(m!=1) stop("too many parameters in theta")
+  bb <- matrix(NA, bigJ)
+  for(j in 1:bigJ) {
+    yy <- semy[,j]
+    xx <- semx[,j]
+    bb[j] <- theta(yy, xx)
+  }
+  return(bb)
+}
+@
+
+Since the Cobb-Douglas 
+model involves regressing $y$ on $x_1$ and $x_2$, its
+function (called\linebreak \code{bstar.cobbd} below) has an additional input \code{x2}. It
+calls the function \code{meboot}
+thrice for \code{y, x1} and \code{x2}. Also, 
+the input to the function \code{theta.cobbd} needs both \code{xx1}
+and \code{xx2} instead of simply \code{xx}, in the code \code{bstar.consu}
+above. We believe
+that it is easy to make such changes to our
+simple and intuitive \code{bstar} type functions. 
+The template \code{bstar.cobbd}, 
+for the two regressor Cobb-Douglas case below, 
+explicitly shows how to extend the function
+\code{bstar.consu} to
+two or more regressors by using \code{x2}, \code{x3}, \code{x4}, \dots as needed.
+
+<<>>=
+bstar.cobbd <- function(y, x1, x2, theta = theta.cobbd,
+  level = 0.95, bigJ = 999, seed1 = 135) {
+  set.seed(seed1) 
+  semy <- meboot(x = y, reps = bigJ)$ensemble
+  semx1 <- meboot(x = x1, reps = bigJ)$ensemble
+  semx2 <- meboot(x = x2, reps = bigJ)$ensemble
+  n <- NROW(y)
+  m <- length(theta.cobbd(y, x1, x2))
+  if(m!=1) stop("too many parameters in theta")
+  bb <- matrix(NA, bigJ)
+  for(j in 1:bigJ) {
+    yy <- semy[,j]
+    xx1 <- semx1[,j]
+    xx2 <- semx2[,j]
+    bb[j] <- theta.cobbd(yy, xx1, xx2)
+  }
+  return(bb)
+}
+@
+
+Now we return to 
+constructing an approximation to the
+sampling distribution of $\hat \beta_3$ 
+in (\ref{Ecnsmptn}),
+without having to assume that the distribution is  
+Student's $t$ or Dickey-Fuller.
+That is, we use the output of the function \code{bstar.consu}
+to construct a confidence interval for $\beta_3$ to
+help decide whether  $\hat \beta_3$ is statistically significantly different from zero.
+Assuming the earlier code is in the memory, let us begin
+by computing the simplest percentile interval, using
+the function \code{quantile} of \proglang{R}, while choosing \code{type = 8}
+\citep[as recommended by][see also \code{help("quantile")}]{Hyndman+Fan:1996}.
+%
+<<>>=
+y <- USconsum[,2]
+x <- USconsum[,1]
+reg <- dynlm(y ~ L(y, 1) + L(x, 1))
+su <- summary(reg)
+se <- su$coefficients[3,2]
+t0 <- theta(y, x)
+b3s <- bstar.consu(y, x, theta) 
+simple.percentile <- quantile(b3s, c(0.025, 0.975), type = 8)
+asymmetric.around.0 <- null.ci(b3s)
+out <- list(t = b3s, t0 = t0, var.t0 = se^2, R = 999)
+class(out) <- "boot"
+library("boot")
+boot.percentile <- boot.ci(out, type = "perc")$percent[4:5] 
+boot.norm <- boot.ci(out, type = "norm")$normal[2:3]
+boot.basic <- boot.ci(out, type = "basic")$basic[4:5]
+rbind(simple.percentile, asymmetric.around.0, boot.percentile, 
+  boot.norm, boot.basic)
+@
+%
+The code above reports four intervals beyond the
+simplest one mentioned before. The
+\pkg{meboot} package includes
+the function \code{null.ci} (an elegant improvement by Achim Zeileis of our
+function \code{zero.ci}) which provides asymmetric confidence intervals
+arond a specified null value (=0, here).  The names of
+three confidence intervals have the prefix boot to remind
+us that they come from
+the \pkg{boot} package \citep{Canty+Ripley:2009}.  These are
+available only after \code{out} is defined
+with a suitable \code{list} and \code{boot.ci} function
+is called with appropriate options.
+These options
+provide
+some of the well known refinements to the 
+percentile confidence interval from the bootstrap literature.
+
+
+Statistical theory behind these refinements is 
+mentioned at the beginning of Section 2.
+In the present context,
+bootstrap estimates
+of $\theta$ (see \code{b3s} above) are
+$\hat \theta_j^*$, with
+$j=1,2,\dots, J$. If the standard error $se$ of
+$\hat \theta$ is known, then
+$(\hat \theta_j^* - \hat \theta) /se$ values provide
+a good approximation to the sampling distribution of 
+$(\hat \theta -  \theta)/se$, the Wald statistic.
+The code in \code{boot.ci} is designed to 
+correct for bias and improve asymptotic
+properties of bootstrap confidence intervals.
+
+Finally, let us consider sophisticated confidence
+intervals based on highest density regions (HDR) of sampling distributions,
+\citet{Hyndman:96}.  If $f(\hat\theta)$ is the
+density, and $\alpha$ is the type~I error
+($=0.05$, say), 
+then the $100(1-\alpha)\%$ 
+HDR is the subset of the
+sample space of the random variable such that 
+\begin{equation}
+\label{EHDR}
+\mathit{HDR}(f_{\alpha}) = \{\hat\theta :  f(\hat\theta) \ge f_{\alpha} \},
+\end{equation}
+where $f_{\alpha}$ is the largest constant such that the following
+probability statement holds true:
+$Pr(\hat\theta \in \mathit{HDR}(f_{\alpha}) ) \ge 1-\alpha$.
+Highest density means every point inside the HDR has
+probability density at least as large as every point outside the HDR.
+When the sampling distribution is bimodal or multimodal, HDR seems to be
+a reliable way of finding confidence regions.
+\citet{Hyndman:96} discusses many advantages of HDR methods.
+We use the \proglang{R} package \pkg{hdrcde} \citep{hdrcde} 
+to find HDR regions with graphics for a study of the
+sampling distribution of $\hat\theta$ under the null.
+It also reports the value of $f_{\alpha}$ appearing
+in equation (\ref{EHDR}).
+
+<<hdrcde, fig=TRUE, include=FALSE, height=5, width=5>>=
+library("hdrcde")
+hdr.den(b3s, main = expression(Highest ~ density ~ region ~
+  of ~ beta [3] ~ estimates :  ~  Hall ~ model))
+@
+
+Note that even the 50\% confidence region (HDR) starts at nearly zero, while
+95\% region decidedly covers the zero.  However
+the largest constants $f_{\alpha}$ are all positive.
+Our \pkg{meboot}
+results (including the HDR) support Friedman's PIH,
+since zero is inside all 95\% confidence intervals for $\beta_3$.
+ 
+
+\begin{figure}[t!]
+\begin{center}
+\includegraphics[width=0.7\textwidth]{meboot-hdrcde}
+\end{center}
+\caption{\label{HDregion} Highest density region for the sampling
+distribution of $\hat\beta_3$ using Hall's model.}
+\end{figure}
+
+
+
+
+
+\subsection{Assessment of the Fed effect on stock prices using panel data}
+
+This example shows how the ME bootstrap can be employed for panel data analysis. 
+Our example is from \citet{Vinod:02} 
+where the effect of monetary policy (interest rates) on prices and their `turning points'
+in the stock market is evaluated in greater detail. 
+
+The `Fed effect' discussed in the financial press refers to a rally in the S\&P 500 
+index of stock prices a few days before the Federal Reserve Bank (Fed) 
+policy makers' meeting and a price decline after the meeting. 
+This example focuses on the longer term than daily price fluctuations by using the monthly 
+data (May 1993 to November 1998 with $T=67$) for stocks with ticker symbols: ABT, AEG, ATI, 
+ALD, ALL, AOL, and AXP and regard this as a representative sample of
+the market containing $N=7$ individual companies.
+
+Note that when the Fed adjusts the Fed funds rate, it affects market 
+expectations and, hence, the interest on 3-month Treasury bills ($\mathit{Tb3}$), 
+the key short-run interest 
+rate in the economy. Our simple model of monetary policy regresses the stock price ($P$) 
+on the natural log of market capitalization ($\mathit{LMV}$, as a control 
+variable for the size of the firm) and the $\mathit{Tb3}$. We write:
+%
+\begin{equation} \label{Efed}
+P_{it} = \beta_1 + \beta_2\, \mathit{LMV}_{it} + 
+\beta_3\, \mathit{Tb3}_{it} + \varepsilon_{it}\,,
+\end{equation}
+%
+where the subscript $it$ refers to $i$-th individual (company) at time $t$ and where 
+$\varepsilon_{it}$ are assumed to be iid. The Fed effect is present, if the
+coefficient of the variable $\mathit{Tb3}$ 
+in equation (\ref{Efed}) is statistically significant.
+
+We use the \proglang{R} package \pkg{plm}  \citep{Croissant+Millo:2008}
+for basic estimation of panel data models
+before any bootstrap. It expects that the data
+be in the form of a \code{data.frame} object.
+Accordingly, the package \pkg{meboot} provides the data
+for this example as a \code{data.frame} object called \code{ullwan}.
+Let us replace the third column containing the `market value of the firm'
+by its logarithms denoted by LMV within the data frame object.
+Since the data setup is critical, it is perhaps useful to
+illustrate our (slightly revised) data frame \code{ullwan} by displaying the 
+initial and ending observations.
+Note that the first column
+entitled \code{Subj} contains the  
+identification numbers 1 to 7, for the 7 ticker symbols included in the data set.
+Note that all time series for the first ticker symbol
+ABT are placed together at the beginning of the data set.
+These are viewed by using the command:
+\code{head(ullwan)}.  Trailing data for observation numbers
+464 to 469 for the last ticker symbol AXP are  viewed by using the command:
+\code{tail(ullwan)}
+in the following code.
+%
+<<>>=
+rm(list = ls())
+library("plm")
+data("ullwan")
+attach(ullwan)
+LMV <- log(MktVal) 
+ullwan[,3] <- LMV
+names(ullwan)[3] <- "LMV"
+head(ullwan)
+tail(ullwan)
+@
+
+\subsubsection{Pooled effects}
+
+Pooled regression means combining the cross-sectional data and time series data into 
+one large set of $T\times N (=67\times 7=469$ here) observations.
+We note below that Student's $t$~value and the corresponding $p$~value from the pooled 
+model suggest a highly significant $\mathit{Tb3}$ 
+regressor implying that the Fed announcement does 
+have a statistically significant effect on the level of stock prices.
+The multiple $R^2$ is $0.497$,
+which becomes $0.495$
+when adjusted for degrees of freedom.
+
+<<>>=
+summary(lm(Price ~ LMV + Tb3))
+@
+
+The
+$t$~value for the coefficient of $\mathit{Tb3}$ 
+from the pooled model suggests that the Fed does 
+have a statistically significant effect on the level of stock prices in a pooled 
+regression. 
+
+
+The default use of the function \code{meboot} is illustrated in
+the earlier subsection
+in \code{bstar.consu} and \code{bstar.cobbd}, where the argument
+\code{x} represents a single vector of numbers (usually time series).  In this subsection we require \code{meboot} 
+to create $J$ 
+replicates over time, separately for all $N$ individuals to suit the panel data. 
+Since the \pkg{plm} package expects
+the panel data in the form of a \code{data.frame}
+object, our
+function \code{meboot} is designed to expect similarly organized data.
+For example, since the identifier for individual (company ticker) called 
+\code{Subj} is
+located in the first column of the \code{ullwan} data frame, the \code{meboot}
+would expect \code{colsubj=1} as the argument.
+It is necessary to call the \code{meboot} function separately for
+each relevant column of the data frame  
+identified by its column number denoted as the argument \code{coldata}.
+For example, we set \code{coldata = 3} for LMV since third
+column has data on LMV.
+Mere presence of non-null values for
+\code{colsubj} and \code{coldata} in the call to \code{meboot}
+triggers it
+to implement its panel data version. 
+ 
+ 
+The following code creates 
+$J=999$ ensembles for the $T=67$ time series points for the $N=7$ stocks separately
+for the three variables in our regression ($P$, $\mathit{LMV}$ and $\mathit{Tb3}$).
+Each call yields an ensemble of $1000$ sets of $67\times 7=469$ data points, upon including 
+the original data as the first column and $999$ additional columns of similarly evolving
+time series.
+%
+<<>>=
+jboot <- 999
+set.seed(567)
+LMV.ens <- meboot(x = ullwan, reps = jboot, colsubj = 1, coldata = 3)
+Price.ens <- meboot(x = ullwan, reps = jboot, colsubj = 1, coldata = 4)
+Tb3.ens <- meboot(x = ullwan, reps = jboot, colsubj = 1, coldata = 6)
+@
+
+The purpose of the ME bootstrap here is to assess whether the effect of the Fed announcement
+continues to be significant for the pooled and other models described below. The slope
+coefficients based on the ME bootstrap ensembles (created above) can be computed as follows.
+
+<<>>=
+slopeTb3 <- slopeLMV <- rep(0, jboot)
+for(j in 1:jboot) {
+  frm <- data.frame(Subj = ullwan[,1], Time = ullwan[,2], 
+    Price = Price.ens[,j], Tb3 = Tb3.ens[,j], LMV = LMV.ens[,j])
+  frm <- plm.data(frm, 7) 
+  gip <- coef(plm(Price ~ LMV + Tb3, model = "pooling", data = frm))
+  slopeTb3[j] <- gip[3]
+  slopeLMV[j] <- gip[2]
+}
+Percentile.Tb3 <- quantile(slopeTb3, c(0.025, 0.975), type = 8) 
+Refined.Tb3 <- null.ci(slopeTb3)
+Percentile.LMV <- quantile(slopeLMV, c(0.025, 0.975), type = 8) 
+Refined.LMV <- null.ci(slopeLMV)
+rbind(Percentile.Tb3, Refined.Tb3, Percentile.LMV, Refined.LMV)
+@
+
+The 95\% ME bootstrap confidence
+intervals for the control variable $\mathit{LMV}$ has all
+estimated slopes positive and the lower limit of
+of the asymmetric (refined) 95\% interval
+is simply the smallest slope.   It suggests that
+$\beta_2$ in (\ref{Efed}) for the pooled model is statistically significantly positive. 
+That is, it is worthwhile to include the control variable in the model.
+
+The 95\% ME bootstrap percentile confidence interval for the slope coefficient of $\mathit{Tb3}$
+is shown above.  Since all estimated slopes by the ME bootstrap are negative
+with the null value zero, the upper limit of the asymmetric (refined) 95\% interval
+is simply the largest slope.  
+It is interesting to
+also report additional advanced confidence intervals from 
+the package \pkg{boot} by using the function \code{boot.ci}
+with some preliminary code to conform with its protocol.
+
+<<>>=
+thetp <- plm(Price ~ LMV + Tb3, model = "pooling", data = ullwan)
+varTb3 <- thetp$vcov[3,3]
+plm1 <- coef(thetp)
+t0Tb3 <- plm1[3]
+t0LMV <- plm1[2]
+out2 <- list(t = as.matrix(slopeTb3), t0 = t0Tb3,
+  var.t0 = varTb3, R = 999)
+class(out2) <- "boot"
+boot.percentile <- boot.ci(out2, type = "perc")$percent[4:5] 
+boot.norm <- boot.ci(out2, type = "norm")$normal[2:3]
+boot.basic <- boot.ci(out2, type = "basic")$basic[4:5]
+rbind(Percentile.Tb3, boot.percentile, boot.norm, boot.basic)
+@
+
+These results clearly suggests that for the pooled model
+$\beta_3$ in (\ref{Efed}) is statistically significantly negative.
+%
+<<>>=
+znp <- pvcm(Price ~ LMV + Tb3, data = ullwan, model = "within")
+zplm <- plm(Price ~ LMV + Tb3, data = ullwan)
+pooltest(zplm, znp)
+@
+%
+The function \code{pvcm} refers to panel variable coefficients models.
+If pooling is appropriate the coefficients for individual units do
+not significantly differ from one another.
+The high value of the $F$~statistic in the output of
+the \code{pooltest}  suggests that pooling 
+may not be appropriate. Hence we need to consider a `random effects' model next. 
+
+\subsubsection{Random effects}
+
+The random effects model results are obtained by setting
+\code{model = "random"} in the arguments of the
+function \code{plm}. 
+
+<<>>=
+gir <- plm(Price ~ LMV + Tb3, data = ullwan, model = "random")
+coef(gir)
+@
+
+Using the ensembles created above for all data variables in equation (\ref{Efed})
+we implement the ME bootstrap for the random effects model and print various confidence
+intervals as follows. 
+
+<<>>=
+slopeTb3 <- slopeLMV <- rep(0, jboot)
+for(j in 1:jboot) {
+  frm <- data.frame(Subj = ullwan[,1], Tim = ullwan[,2],
+    Price = Price.ens[,j], Tb3 = Tb3.ens[,j], LMV = LMV.ens[,j])
+  frm <- plm.data(frm, 7)
+  gip <- coef(plm(Price ~ LMV + Tb3, model = "random", data = frm))
+  slopeTb3[j] <- gip[3]
+  slopeLMV[j] <- gip[2]
+}
+Percentile.Tb3 <- quantile(slopeTb3, c(0.025, 0.975), type = 8) 
+Refined.Tb3 <- null.ci(slopeTb3)
+Percentile.LMV <- quantile(slopeLMV, c(0.025, 0.975), type = 8) 
+Refined.LMV <- null.ci(slopeLMV)
+rbind(Percentile.Tb3, Refined.Tb3, Percentile.LMV, Refined.LMV)
+@
+
+Now we
+use the function \code{boot.ci}
+after some preliminary code to conform with its protocol
+to obtain additional `random effects' confidence intervals for the coefficient
+of $Tb3$.
+
+<<>>=
+thetr <- plm(Price ~ LMV + Tb3, model = "random", data = ullwan)
+varTb3 <- thetr$vcov[3,3]
+plm1 <- coef(thetr)
+t0Tb3 <- plm1[3]
+out3 <- list(t = as.matrix(slopeTb3), t0 = t0Tb3, var.t0 = varTb3, R = 999)
+class(out3) <- "boot"
+boot.percentile <- boot.ci(out3, type = "perc")$percent[4:5] 
+boot.norm <- boot.ci(out3, type = "norm")$normal[2:3]
+boot.basic <- boot.ci(out3, type = "basic")$basic[4:5]
+rbind(boot.percentile, boot.norm, boot.basic)
+@
+
+The random effects 95\% ME bootstrap confidence intervals using the 999 replicates of 
+data are essentially similar to the pooled data results, allowing
+us to conclude that both $\beta_2$ and $\beta_3$ in (\ref{Efed}) are significantly
+different from zero.  Since the 95\% confidence intervals for $\beta_3$ do not cover 
+the zero, we can conclude that the `Fed effect' is significant for the random effects 
+panel data model.
+
+%%%%%%%%    %%%%%%%%    %%%%%%%%    %%%%%%%%    %%%%%%%%    %%%%%%%%
+
+\section{Concluding remarks}
+
+%%%%%%%%    %%%%%%%%    %%%%%%%%    %%%%%%%%    %%%%%%%%    %%%%%%%%
+
+This paper illustrates the performance and usage of Vinod's maximum entropy bootstrap 
+for dependent data by using econometric examples, including one involving panel 
+(longitudinal) data. Besides econometrics, at least some time series in biology, 
+engineering and social sciences are similarly
+state-dependent and subject to structural changes and discontinuities. 
+All such series cannot be transformed into stationary series without impairing 
+our understanding of underlying relations among them.
+The \pkg{meboot} \proglang{R} package not only fills a gap in the bootstrap toolkit, 
+but is particularly useful as
+it permits simpler model specifications (allowing a direct use of one or more such 
+time series without first making them stationary) and convenient statistical inference 
+(avoiding non-standard Dickey-Fuller type sampling distributions).
+
+%%%%%%%%    %%%%%%%%    %%%%%%%%    %%%%%%%%    %%%%%%%%    %%%%%%%%
+
+\section*{Acknowledgments}
+
+We thank the referee, Achim Zeileis and Johanna Francis for helpful comments.
+
+\bibliography{meboot}
+
+\end{document}

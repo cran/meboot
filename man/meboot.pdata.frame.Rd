@@ -1,5 +1,5 @@
-\name{panel.meboot}
- \alias{panel.meboot}
+\name{meboot.pdata.frame}
+ \alias{meboot.pdata.frame}
   \title{Maximum Entropy Bootstrap for Panel Time Series Data}
 
   \description{
@@ -7,16 +7,24 @@
   }
 
   \usage{
-    panel.meboot (x, reps, colsubj, coldata, coltimes,...)
+    meboot.pdata.frame (x, reps=999, trim=0.10, reachbnd=TRUE,
+      expand.sd=TRUE, force.clt=TRUE, elaps=FALSE,
+      colsubj, coldata, coltimes, ...)
   }
 
   \arguments{
-    \item{x}{a matrix or data.frame object containing by columns: the individual index, an optional time index and a panel of time series data.}
+    \item{x}{a \code{pdata.frame} object containing by columns: the individual index, an optional time index and a panel of time series data.}
     \item{reps}{number of replicates to generate for each subject in the panel.}
+    \item{trim}{the trimming proportion.}
+    \item{reachbnd}{logical. If \code{TRUE} potentially reached bounds (xmin = smallest value - trimmed mean and xmax=largest value + trimmed mean) are given when the random draw happens to be equal to 0 and 1, respectively.
+    }
+    \item{expand.sd}{logical. If TRUE the standard deviation in the ensemble in expanded. See \code{\link{expand.sd}}.}
+    \item{force.clt}{logical.If TRUE the ensemble is forced to satisfy the central limit theorem. See \code{\link{force.clt}}.}
+    \item{elaps}{logical. If TRUE elapsed time during computations is displayed.}
     \item{colsubj}{the column in \code{x} that contains the individual index.}
     \item{coldata}{the column in \code{x} that contains the data of the variable to create the ensemble.}
     \item{coltimes}{an optional argument indicating the column that contains the times at which the observations for each individual are observed.}
-    \item{...}{further arguments to be passed to \code{\link{meboot}}.}
+    \item{...}{possible argument \code{fiv} to be passed to \code{\link{expand.sd}}.}    
   }
 
   \details{
@@ -37,10 +45,8 @@
 
   \examples{
     ## Ensemble for a panel of series of stock prices  
-    data(ullwan)
-    out <- panel.meboot(ullwan, reps=99, colsubj=2, coldata=4)
+    data("ullwan")
+    out <- meboot(ullwan, reps=99, colsubj=2, coldata=4)
   }
 
 \keyword{ts}
-
-
