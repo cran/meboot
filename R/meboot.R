@@ -29,7 +29,7 @@ meboot.default <- function(x, reps=999, trim=0.10, reachbnd=TRUE,
   # of deviations among all consecutive observations ('dv').
   # Thus the tails are uniform distributed.
 
-  dv <- abs(diff(x))
+  dv <- abs(diff(as.numeric(x)))
   dvtrim <- mean(dv, trim=trim)
   xmin <- xx[1] - dvtrim
   xmax <- xx[n] + dvtrim
