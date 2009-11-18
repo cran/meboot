@@ -3,4 +3,4 @@ useDynLib(meboot)
 
 export(expand.sd, force.clt,
   meboot, meboot.default, meboot.pdata.frame,
-  null.ci, olsHALL.b, slider.mts, zero.ci)
+  null.ci, olsHALL.b, slider.mts, checkConv, zero.ci)
