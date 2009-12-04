@@ -20,9 +20,9 @@ checkConv (y, bigx, trueb = 1, n999 = 999, nover = 5,
   \item{y}{vector of data containing the dependent variable.}
   \item{bigx}{vector of data for all regressor variables in a regression or \code{ts} object.
 \code{bigx} should not include column of ones for the intercept.}
-  \item{trueb}{true values of regressor coefficients for simulation.
-If \code{trueb=0} then use OLS coefficient values rounded to 2 digits as true values 
-of beta for simulation purposes.}
+  \item{trueb}{true values of regressor coefficients for simulation. If \code{trueb=0} then use OLS 
+coefficient values rounded to 2 digits as true values of beta for simulation purposes, to be close 
+to but not exactly equal to OLS.}
   \item{n999}{number of replicates to generate in a simulation.}
   \item{nover}{number of values of n over which convergence calculated.}
   \item{seed1}{seed for the random number generator.}
@@ -81,11 +81,11 @@ y <- uk[,5]
 bigx <- cbind(dp1,du,u1) # collect all regressors
 reg1 <- lm(y ~ bigx)
 coef(reg1)
-nover <- 16 #choose range allowing n=25, 26, .. , 40
+nover <- 16 # choose range allowing n=25, 26, .. , 40
 
 # the following step will take some time to run
 
-sC <- checkConv(y, bigx, trueb=0, n999=999, nover=nover, seed1=294) 
+sC <- checkConv(y, bigx, trueb=0, n999=999, nover=nover, seed1=294)
 
 dim(sC) # n999 x nover x length(key)
 j <- 3  # choose key coefficient no. 3 for lagged income
@@ -109,8 +109,7 @@ plot(nn,critp, typ="l",
 plot(nn,critas, typ="l", 
   main="Almost sure convergence:  Diff(Inflation) Coefficient",
   xlab="Sample size", ylab="Criterion using 999 sample paths")
-
-par(opar) # reset
+par(opar)
 
 regp <- lm(critp ~ nn) # OLS of conv. in prob. criterion
 sup <- summary(regp) # regressed on sample size

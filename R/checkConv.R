@@ -3,7 +3,9 @@ checkConv <- function(y, bigx, trueb = 1, n999 = 999, nover = 5,
   seed1 = 294, key = 0, trace = FALSE) 
 {
   p <- NCOL(bigx)
-  np <- p+1
+  np <- p + 1
+
+  bigx <- as.matrix(bigx) # 'p' columns
 
   if (trace)
   {
@@ -11,8 +13,17 @@ checkConv <- function(y, bigx, trueb = 1, n999 = 999, nover = 5,
     print(np)
   }
 
-  if (trueb == 0)
-    trueb <- round(coef(lm(y~bigx)), 2)
+  # basic regression 
+
+  reg1 <- lm(y ~ bigx)
+
+  if (trace)
+  {
+    print(reg1)
+  }
+
+  if (all(trueb == 0))
+    trueb <- round(coef(reg1), 2)
 
   if (trace)
   {
@@ -32,7 +43,7 @@ checkConv <- function(y, bigx, trueb = 1, n999 = 999, nover = 5,
   nstart <- bigt - nover + 1
 
   if (nstart < 0)
-    stop("Error in Input nover to checkConv.")
+    stop("Error in input 'nover' to checkConv.")
 
   if (trace)
   {
@@ -55,18 +66,11 @@ checkConv <- function(y, bigx, trueb = 1, n999 = 999, nover = 5,
     warning("key regressors > 5 for detailed analysis.")
 
   # =matrix(rep(NA, nk*n999), nrow=n999, ncol=nk)  
-  XnmX <- array(NA, dim=c(n999,nover,nk) )  #place to store output
+  XnmX <- array(NA, dim = c(n999, nover, nk))  # place to store output
   #needs n999 rows for the CC package 
-  #above is 3 dimensional matrix arry
+  #above is 3 dimensional matrix array
 
-  reg1 <- lm(y ~ bigx)
-
-  if (trace)
-  {
-    print(reg1) #basic regression 
-  }
-
-  sd1=sd(resid(reg1)) #to be used  
+  sd1 <- sd(resid(reg1)) # to be used  
   #in the definition of sd of normal errors  
   #in the context of simulated errors
   set.seed(seed1)  
@@ -83,13 +87,13 @@ checkConv <- function(y, bigx, trueb = 1, n999 = 999, nover = 5,
   if (trace)
   {
     cat("Compare OLS ytrue~bigx with assumed true coefficients.\n")
-    print(cbind(olsb, trueb) ) 
+    print(cbind(olsb, trueb))
   }
 
   #prepare to simulate for np coefficients  
   #dat=array(NA, dim=c(np,n999,nover) )
-  set.seed(seed1)  #now lower case meboot data create
-  meby <- meboot(x=y, reps=n999)$ensem  
+  #set.seed(seed1)  #now lower case meboot data create
+  meby <- meboot(x=ytrue, reps=n999)$ensem  
 
   mebigx <- array(NA, dim=c(bigt,n999,p) )
   for (k in seq(1, p))
@@ -103,16 +107,19 @@ checkConv <- function(y, bigx, trueb = 1, n999 = 999, nover = 5,
   for (n in seq(nstart, bigt))
   { #begin n loop
     nout <- nout + 1 #start at 1 till nover  
-    reg3 <- lm(y[1:n] ~ bigx[1:n,]) #OLS  
+    reg3 <- lm(ytrue[1:n] ~ bigx[1:n,]) #OLS  
     olsb <- coef(reg3)
 
     if (trace)
-      print(olsb)
+      print(round(olsb, 2))
 
     Meby <- meby[1:n,]#choose n rows starting at 2  
     #Meby is n by 999,  Mebigx is n by 999 by p
-    Mebigx <- mebigx[1:n,,]#choose n rows of regressors
+    Mebigx <- mebigx[1:n,,] #choose n rows of regressors
     #note first character is upper case M here
+
+    Mebigx <- as.array(Mebigx)
+    dim(Mebigx) <- c(n, n999, p)
 
     for (i in seq(1, n999))
     { # begin i loop to use meboot resamples  
