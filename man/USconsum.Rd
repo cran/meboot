@@ -1,5 +1,4 @@
 \name{USconsum}
- \docType{USconsum}
   \alias{USconsum}
 
   \title{Consumption and Disposable Income Data (Annual 1948-1998)}

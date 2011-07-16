@@ -1,6 +1,6 @@
 Package: meboot
-Version: 1.1-1
-Date: 2009-12-4
+Version: 1.1-2
+Date: 2011-07-16
 Title: Maximum Entropy Bootstrap for Time Series
 Author: Hrishikesh D. Vinod <Vinod@fordham.edu> and Javier
         López-de-Lacalle
@@ -16,6 +16,6 @@ Description: This package performs maximum entropy density based
         how the algorithm satisfies the ergodic theorem and the central
         limit theorem.
 License: GPL (>= 2)
-Packaged: 2009-12-04 19:29:37 UTC; javlacalle
+Packaged: 2011-07-26 18:46:27 UTC; javlacalle
 Repository: CRAN
-Date/Publication: 2009-12-06 09:22:29
+Date/Publication: 2011-07-26 20:23:50
