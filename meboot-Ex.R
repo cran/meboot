@@ -90,6 +90,26 @@ flush(stderr()); flush(stdout())
 
 
 cleanEx()
+nameEx("flexMeboot")
+### * flexMeboot
+
+flush(stderr()); flush(stdout())
+
+### Name: flexMeboot
+### Title: Flexible Extension of the Maximum Entropy Bootstrap Procedure
+### Aliases: flexMeboot
+### Keywords: ts
+
+### ** Examples
+
+set.seed(235)
+myseq <- seq(-1, 1, by = 0.5)
+xx <- flexMeboot(x = AirPassengers, myseq = myseq, reps = 3)
+matplot(cbind(AirPassengers, xx), type = "l")
+
+
+
+cleanEx()
 nameEx("force.clt")
 ### * force.clt
 
@@ -141,38 +161,15 @@ flush(stderr()); flush(stdout())
 
 
 cleanEx()
-nameEx("meboot.default")
-### * meboot.default
-
-flush(stderr()); flush(stdout())
-
-### Name: meboot.default
-### Title: Generate Maximum Entropy Bootstrapped Time Series Ensemble
-### Aliases: meboot.default
-### Keywords: ts
-
-### ** Examples
-
-    ## Ensemble for the AirPassenger time series data
-    set.seed(345)
-    out <- meboot(x=AirPassengers, reps=100, trim=0.10, elaps=TRUE)
-
-    ## Ensemble for T=5 toy time series used in Vinod (2004)
-    set.seed(345)
-    out <- meboot(x=c(4, 12, 36, 20, 8), reps=999, trim=0.25, elaps=TRUE)
-    mean(out$ens)  # ensemble mean should be close to sample mean 16
-  
-
-
-cleanEx()
 nameEx("meboot.pdata.frame")
 ### * meboot.pdata.frame
 
 flush(stderr()); flush(stdout())
 
-### Name: meboot.pdata.frame
+### Name: meboot-methods
 ### Title: Maximum Entropy Bootstrap for Panel Time Series Data
-### Aliases: meboot.pdata.frame
+### Aliases: 'meboot, pdata.frame, meboot.method' meboot.pdata.frame
+###   meboot.default
 ### Keywords: ts
 
 ### ** Examples

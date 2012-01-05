@@ -12,7 +12,7 @@
 
   \arguments{
     \item{x}{a vector of data or a time series object.}
-    \item{ensemble}{a matrix or 'mts' object containing resamples of the original data in 'x'.}
+    \item{ensemble}{a matrix or \code{mts} object containing resamples of the original data \code{x}.}
   }
 
   \value{

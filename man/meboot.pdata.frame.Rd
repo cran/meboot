@@ -1,5 +1,8 @@
-\name{meboot.pdata.frame}
+\name{meboot-methods}
+\docType{methods}
+ \alias{meboot, pdata.frame, meboot.method}
  \alias{meboot.pdata.frame}
+ \alias{meboot.default}
   \title{Maximum Entropy Bootstrap for Panel Time Series Data}
 
   \description{

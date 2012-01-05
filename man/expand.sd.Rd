@@ -12,7 +12,7 @@
 
   \arguments{
     \item{x}{a vector of data or a time series object.}
-    \item{ensemble}{a matrix or 'mts' object containing resamples of the original data in 'x'.}
+    \item{ensemble}{a matrix or \code{mts} object containing resamples of the original data \code{x}.}
     \item{fiv}{reference value for the upper limit of a uniform distribution used in expansion. For example, if equal to 5 the standard deviation of each resample is expanded through a value from a uniform random distribution with lower limit equal to 1 and upper limit equal to 1+(5/100)=1.05.}
   }
 

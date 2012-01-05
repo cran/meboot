@@ -5,7 +5,9 @@ force.clt <- function(x, ensemble)
   bigj <- ncol(ensemble)
 
   gm <- mean(x)  # desired grand mean
-  s <- sd(x)     # sd of original data
+  #s <- sd(x)     # sd of original data
+  s <- if (is.null(ncol(x)))
+    sd(x) else apply(x, 2, sd)
   smean <- s/sqrt(bigj)  # desired standard deviation of means by CLT
   xbar <- apply(ensemble, 2, mean)
   sortxbar <- sort(xbar)  

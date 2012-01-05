@@ -1,7 +1,10 @@
 
 expand.sd <- function(x, ensemble, fiv=5)
 {
-  sdf <- c(sd(x), sd(ensemble))
+  sdx <- if (is.null(ncol(x)))
+    sd(x) else apply(x, 2, sd)
+
+  sdf <- c(sdx, apply(ensemble, 2, sd))
   sdfa <- sdf/sdf[1]  # ratio of actual sd to that of original data
   sdfd <- sdf[1]/sdf  # ratio of desired sd to actual sd
 

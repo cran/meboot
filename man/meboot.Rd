@@ -18,7 +18,7 @@
     \item{reachbnd}{logical. If TRUE potentially reached bounds (xmin = smallest value - trimmed mean and xmax=largest value + trimmed mean) are given when the random draw happens to be equal to 0 and 1, respectively.
     }
     \item{expand.sd}{logical. If TRUE the standard deviation in the ensemble in expanded. See \code{\link{expand.sd}}.}
-    \item{force.clt}{logical.If TRUE the ensemble is forced to satisfy the central limit theorem. See \code{\link{force.clt}}.}
+    \item{force.clt}{logical. If TRUE the ensemble is forced to satisfy the central limit theorem. See \code{\link{force.clt}}.}
     \item{elaps}{logical. If TRUE elapsed time during computations is displayed.}
     \item{colsubj}{the column in \code{x} that contains the individual index. It is ignored if the input data \code{x} is not a \code{pdata.frame} object.}
     \item{coldata}{the column in \code{x} that contains the data of the variable to create the ensemble. It is ignored if the input data \code{x} is not a \code{pdata.frame} object.}

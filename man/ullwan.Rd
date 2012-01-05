@@ -1,4 +1,5 @@
 \name{ullwan}
+ \docType{data}
   \alias{ullwan}
 
   \title{Data about Some of the S\&P 500 Stock Prices}

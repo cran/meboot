@@ -1,4 +1,5 @@
 \name{USfygt}
+ \docType{data}
   \alias{USfygt}
 
   \title{Long-term Treasury Bond Rates and Deficit Data Set (Annual 1948-200)}
