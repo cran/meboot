@@ -1,13 +1,22 @@
 
-meboot <- function(x, reps=999, trim=0.10, reachbnd=TRUE,
-  expand.sd=TRUE, force.clt=TRUE, elaps=FALSE,
-  colsubj, coldata, coltimes, ...){
-  UseMethod("meboot", x)
-}
+#meboot <- function(x, reps=999, trim=0.10, reachbnd=TRUE,
+#  expand.sd=TRUE, force.clt=TRUE, elaps=FALSE,
+#  colsubj, coldata, coltimes, ...){
+#  UseMethod("meboot", x)
+#}
 
-meboot.default <- function(x, reps=999, trim=0.10, reachbnd=TRUE,
-  expand.sd=TRUE, force.clt=TRUE, elaps=FALSE, ...)
+meboot <- function(x, reps=999, trim=0.10, reachbnd=TRUE,
+  expand.sd=TRUE, force.clt=TRUE, elaps=FALSE, 
+  colsubj, coldata, coltimes,...)
 {
+  if ("pdata.frame" %in% class(x))
+  {
+     res <- meboot.pdata.frame (x, reps, trim, reachbnd,
+      expand.sd, force.clt, elaps,
+      colsubj, coldata, coltimes, ...)
+     return(res)
+  }
+
   ptm1 <- proc.time()
 
   n <- length(x)

@@ -18,7 +18,13 @@ to allow for for a flexible trend up, flat or down.
   \item{segment}{block size.}
   \item{forc}{logical. If TRUE the ensemble is forced to satisfy the central limit theorem. 
 See \code{\link{force.clt}}.}
-  \item{myseq}{randomly chosen directions for trend.}
+  \item{myseq}{directions for trend within a block of data is chosen randomly with the user's choice
+limited by the range of values given by myseq. For example, \code{myseq=seq(-1,1,by=0.5)}
+provides five options for direction changes. If the user specifies any single number
+instead of a sequence, (e.g., \code{myseq=1}) then \code{flexMeboot} will not change the directions
+of trends at all, but will modify the original \code{meboot} function to resample separately
+within several non-overlapping blocks, before joining them into resampled time series.
+This may be desirable for long series and for some applications.}
 }
 
 \details{
@@ -60,6 +66,11 @@ the bootstrapped replicated of the original data \code{x}.
 }
 
 \seealso{\code{\link{meboot}}.}
+
+\references{
+Vinod, H.D. (2012), Constructing Scenarios of Time Heterogeneous Series for Stress Testing,
+Available at SSRN: \url{http://ssrn.com/abstract=1987879}.
+}
 
 \examples{
 set.seed(235)

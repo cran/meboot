@@ -2,5 +2,5 @@
 useDynLib(meboot)
 
 export(expand.sd, flexMeboot, force.clt,
-  meboot, meboot.default, meboot.pdata.frame,
+  meboot, meboot.pdata.frame,
   null.ci, olsHALL.b, slider.mts, checkConv, zero.ci)

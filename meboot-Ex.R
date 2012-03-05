@@ -166,10 +166,9 @@ nameEx("meboot.pdata.frame")
 
 flush(stderr()); flush(stdout())
 
-### Name: meboot-methods
+### Name: meboot.pdata.frame
 ### Title: Maximum Entropy Bootstrap for Panel Time Series Data
-### Aliases: 'meboot, pdata.frame, meboot.method' meboot.pdata.frame
-###   meboot.default
+### Aliases: meboot.pdata.frame
 ### Keywords: ts
 
 ### ** Examples
