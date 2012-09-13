@@ -8,11 +8,11 @@ olsHALL.b <- function(y, x)
   tol <- 1e-07
   n <- nrow(x)
 
-  z <- .Fortran("dqrls", qr = x, n = n, p = p, y = y, ny = ny,
-          tol = as.double(tol), coefficients = mat.or.vec(p, ny),
-          residuals = y, effects = y, rank = integer(1), pivot = 1:p,
-          qraux = double(p), work = double(2 * p), package="base")
+  #z <- .Fortran("dqrls", qr = x, n = n, p = p, y = y, ny = ny,
+  #        tol = as.double(tol), coefficients = mat.or.vec(p, ny),
+  #        residuals = y, effects = y, rank = integer(1), pivot = 1:p,
+  #        qraux = double(p), work = double(2 * p), PACKAGE = "base")
+  z <- lm.fit(x, y)
 
   z$coefficients
 }
-
