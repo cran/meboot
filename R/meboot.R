@@ -6,13 +6,14 @@
 #}
 
 meboot <- function(x, reps=999, trim=0.10, reachbnd=TRUE,
-  expand.sd=TRUE, force.clt=TRUE, elaps=FALSE, 
+  expand.sd=TRUE, force.clt=TRUE, 
+  scl.adjustment = FALSE, sym = FALSE, elaps=FALSE, 
   colsubj, coldata, coltimes,...)
 {
   if ("pdata.frame" %in% class(x))
   {
      res <- meboot.pdata.frame (x, reps, trim, reachbnd,
-      expand.sd, force.clt, elaps,
+      expand.sd, force.clt, scl.adjustment, sym, elaps,
       colsubj, coldata, coltimes, ...)
      return(res)
   }
@@ -27,6 +28,15 @@ meboot <- function(x, reps=999, trim=0.10, reachbnd=TRUE,
   xx <- sort(x)
   ordxx <- order(x)
   #ordxx <- sort.int(x, index.return=TRUE)
+
+  # symmetry
+
+  if (sym)
+  {
+    xxr <- rev(xx) #reordered values
+    xx.sym <- mean(xx) + 0.5*(xx - xxr) #symmetrized order stats
+    xx <- xx.sym #replace order stats by symmetrized ones
+  }
 
   # Compute intermediate points on the sorted series.
 
@@ -77,6 +87,30 @@ meboot <- function(x, reps=999, trim=0.10, reachbnd=TRUE,
   if(force.clt)
     ensemble <- force.clt(x=x, ensemble=ensemble)
 
+  # scale adjustment
+
+  if (scl.adjustment)
+  {
+    zz <- c(xmin,z,xmax) #extended list of z values
+    #v <- rep(NA, n) #storing within variances
+    #for (i in 2:(n+1)) {
+    #  v[i-1] <- ((zz[i] - zz[i-1])^2) / 12
+    #}
+    v <- diff(zz^2) / 12
+    xb <- mean(x)
+    s1 <- sum((desintxb - xb)^2)
+    uv <- (s1 + sum(v)) / n
+    desired.sd <- sd(x)
+    actualME.sd <- sqrt(uv)
+    if (actualME.sd <= 0) 
+      stop("actualME.sd<=0 Error")
+    out <- desired.sd / actualME.sd
+    kappa <- out - 1
+
+    ensemble <- ensemble + kappa * (ensemble - xb)
+  } else
+    kappa <- NULL
+
   #ensemble <- cbind(x, ensemble)
   if(is.ts(x)){
     ensemble <- ts(ensemble, frequency=frequency(x), start=start(x))
@@ -91,7 +125,7 @@ meboot <- function(x, reps=999, trim=0.10, reachbnd=TRUE,
                              paste(elapsr$units, ".", sep=""), "\n")
 
   list(x=x, ensemble=ensemble, xx=xx, z=z, dv=dv, dvtrim=dvtrim, xmin=xmin,
-       xmax=xmax, desintxb=desintxb, ordxx=ordxx, elaps=elapsr)
+       xmax=xmax, desintxb=desintxb, ordxx=ordxx, kappa = kappa, elaps=elapsr)
 }
 
 meboot.part <- function(x, n, z, xmin, xmax, desintxb, reachbnd)

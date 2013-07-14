@@ -3,7 +3,7 @@ source(file.path(R.home("share"), "R", "examples-header.R"))
 options(warn = 1)
 library('meboot')
 
-assign(".oldSearch", search(), pos = 'CheckExEnv')
+base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
 cleanEx()
 nameEx("checkConv")
 ### * checkConv
@@ -17,59 +17,62 @@ flush(stderr()); flush(stdout())
 
 ### ** Examples
 
-library(strucchange)
+## Not run: 
+library("ConvergenceConcepts")
+library("strucchange")
 data("PhillipsCurve")
+## Not run: 
+##D uk <- window(PhillipsCurve, start = 1948)
+##D attach(data.frame(uk))
+##D y <- uk[,5]
+##D bigx <- cbind(dp1,du,u1) # collect all regressors
+##D reg1 <- lm(y ~ bigx)
+##D coef(reg1)
+##D nover <- 16 # choose range allowing n=25, 26, ..., 40
+##D 
+##D # the following step will take some time to run
+##D 
+##D sC <- checkConv(y, bigx, trueb=0, n999=999, nover=nover, seed1=294)
+##D 
+##D dim(sC) # n999 x nover x length(key)
+##D j <- 3  # choose key coefficient no. 3 for lagged income
+##D epsilon <- 0.1  #needed for p.as.plot command below
+##D nb.sp <- 10 # needed for p.as.plot command below 
+##D mode <- "p"  # needed for p.as.plot command below
+##D 
+##D # criterion function in ConvergenceConcepts package wants 999 rows
+##D dat <- sC[,,j] # 999 sample paths for diff inflation n=25,26,..40
+##D critp <- criterion(data = dat, epsilon = epsilon, mode = "p")$crit
+##D critas <- criterion(data = dat, epsilon = epsilon, mode = "as")$crit
+##D 
+##D p.as.plot(dat, critp, critas, epsilon, nb.sp, mode = mode)  
+##D nstart <- length(y) - nover + 1
+##D nn <- seq(nstart, length(y))  # choose the range of n the sample size
+##D 
+##D opar <- par(mfrow = c(2,1)) #plot 2 plots in one
+##D plot(nn,critp, typ="l", 
+##D   main="Convergence in probability: Diff(Inflation) Coefficient",
+##D   xlab="Sample size", ylab="Criterion using 999 sample paths")
+##D plot(nn,critas, typ="l", 
+##D   main="Almost sure convergence:  Diff(Inflation) Coefficient",
+##D   xlab="Sample size", ylab="Criterion using 999 sample paths")
+##D par(opar)
+##D 
+##D regp <- lm(critp ~ nn) # OLS of conv. in prob. criterion
+##D sup <- summary(regp) # regressed on sample size
+##D sup$coef
+##D # slope coeff. should be negative in sign for convergence
+##D # the t statistic on the slope coefficient should be large
+##D regas <- lm(critas ~ nn) #OLS of almost sure conv criterion
+##D suas <- summary(regas)#regressed on sample size
+##D suas$coef
+##D # slope coeff. should be negative in sign for convergence
+##D # the t statistic on the slope coefficient should be large
+## End(Not run)
+## End(Not run)
 
-uk <- window(PhillipsCurve, start = 1948)
-attach(data.frame(uk))
-y <- uk[,5]
-bigx <- cbind(dp1,du,u1) # collect all regressors
-reg1 <- lm(y ~ bigx)
-coef(reg1)
-nover <- 16 # choose range allowing n=25, 26, .. , 40
-
-# the following step will take some time to run
-
-sC <- checkConv(y, bigx, trueb=0, n999=999, nover=nover, seed1=294)
-
-dim(sC) # n999 x nover x length(key)
-j <- 3  # choose key coefficient no. 3 for lagged income
-epsilon <- 0.1  #needed for p.as.plot command below
-nb.sp <- 10 # needed for p.as.plot command below 
-mode <- "p"  # needed for p.as.plot command below
-
-# criterion function in ConvergenceConcepts package wants 999 rows
-dat <- sC[,,j] # 999 sample paths for diff inflation n=25,26,..40
-critp <- criterion(data = dat, epsilon = epsilon, mode = "p")$crit
-critas <- criterion(data = dat, epsilon = epsilon, mode = "as")$crit
-
-p.as.plot(dat, critp, critas, epsilon, nb.sp, mode = mode)  
-nstart <- length(y) - nover + 1
-nn <- seq(nstart, length(y))  # choose the range of n the sample size
-
-opar <- par(mfrow = c(2,1)) #plot 2 plots in one
-plot(nn,critp, typ="l", 
-  main="Convergence in probability: Diff(Inflation) Coefficient",
-  xlab="Sample size", ylab="Criterion using 999 sample paths")
-plot(nn,critas, typ="l", 
-  main="Almost sure convergence:  Diff(Inflation) Coefficient",
-  xlab="Sample size", ylab="Criterion using 999 sample paths")
-par(opar)
-
-regp <- lm(critp ~ nn) # OLS of conv. in prob. criterion
-sup <- summary(regp) # regressed on sample size
-sup$coef
-# slope coeff. should be negative in sign for convergence
-# the t statistic on the slope coefficient should be large
-regas <- lm(critas ~ nn) #OLS of almost sure conv criterion
-suas <- summary(regas)#regressed on sample size
-suas$coef
-# slope coeff. should be negative in sign for convergence
-# the t statistic on the slope coefficient should be large
 
 
-
-graphics::par(get("par.postscript", pos = 'CheckExEnv'))
 cleanEx()
 nameEx("expand.sd")
 ### * expand.sd
@@ -268,7 +271,8 @@ flush(stderr()); flush(stdout())
 
 ### * <FOOTER>
 ###
-cat("Time elapsed: ", proc.time() - get("ptime", pos = 'CheckExEnv'),"\n")
+options(digits = 7L)
+base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
 grDevices::dev.off()
 ###
 ### Local variables: ***

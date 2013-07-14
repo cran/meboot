@@ -8,18 +8,21 @@
 
   \usage{
     meboot (x, reps=999, trim=0.10, reachbnd=TRUE,
-  expand.sd=TRUE, force.clt=TRUE, elaps=FALSE, colsubj, coldata, coltimes, ...)
+  expand.sd=TRUE, force.clt=TRUE, scl.adjustment = FALSE, sym = FALSE,
+  elaps=FALSE, colsubj, coldata, coltimes, ...)
   }
 
   \arguments{
     \item{x}{vector of data, \code{ts} object or \code{pdata.frame} object.}
     \item{reps}{number of replicates to generate.}
     \item{trim}{the trimming proportion.}
-    \item{reachbnd}{logical. If TRUE potentially reached bounds (xmin = smallest value - trimmed mean and xmax=largest value + trimmed mean) are given when the random draw happens to be equal to 0 and 1, respectively.
-    }
-    \item{expand.sd}{logical. If TRUE the standard deviation in the ensemble in expanded. See \code{\link{expand.sd}}.}
-    \item{force.clt}{logical. If TRUE the ensemble is forced to satisfy the central limit theorem. See \code{\link{force.clt}}.}
-    \item{elaps}{logical. If TRUE elapsed time during computations is displayed.}
+    \item{reachbnd}{logical. If \code{TRUE} potentially reached bounds (xmin = smallest value - trimmed mean and xmax=largest value + trimmed mean) are given when the random draw happens to be equal to 0 and 1, respectively.}
+    \item{expand.sd}{logical. If \code{TRUE} the standard deviation in the ensemble in expanded. See \code{\link{expand.sd}}.}
+    \item{force.clt}{logical. If \code{TRUE} the ensemble is forced to satisfy the central limit theorem. See \code{\link{force.clt}}.}
+    \item{scl.adjustment}{logical. If \code{TRUE} scale adjustment is performed 
+       to ensure that the population variance of the transformed series equals the variance of the data.}
+    \item{sym}{logical. If \code{TRUE} an adjustment is peformed to ensure that the ME density is symmetric.}
+    \item{elaps}{logical. If \code{TRUE} elapsed time during computations is displayed.}
     \item{colsubj}{the column in \code{x} that contains the individual index. It is ignored if the input data \code{x} is not a \code{pdata.frame} object.}
     \item{coldata}{the column in \code{x} that contains the data of the variable to create the ensemble. It is ignored if the input data \code{x} is not a \code{pdata.frame} object.}
     \item{coltimes}{an optional argument indicating the column that contains the times at which the observations for each individual are observed. It is ignored if the input data \code{x} is not a \code{pdata.frame} object.}
@@ -37,25 +40,31 @@
        \item Apply to the sample quantiles the correct order to keep the dependence relationships of the observed data.
        \item Repeat the previous steps several times (e.g. 999). 
      }
+
+   The scale and symmetry adjustments are described in Vinod (2013) referenced below.
   }
 
   \value{
     \item{x}{original data provided as input.}
     \item{ensemble}{maximum entropy bootstrap replicates.}
-    \item{xx}{sorted order stats (x[1] is minimum value).}
+    \item{xx}{sorted order stats (xx[1] is minimum value).}
     \item{z}{class intervals limits.}
     \item{dv}{deviations of consecutive data values.}
     \item{dvtrim}{trimmed mean of dv.}
-    \item{xmin}{data minimum for ensemble=x[1]-dvtrim.}
-    \item{xmax}{data x maximum for ensemble=x[n]+dvtrim.}
+    \item{xmin}{data minimum for ensemble=xx[1]-dvtrim.}
+    \item{xmax}{data x maximum for ensemble=xx[n]+dvtrim.}
     \item{desintxb}{desired inteval means.}
     \item{ordxx}{ordered x values.}
+    \item{kappa}{scale adjustment to the variance of ME density.}
     \item{elaps}{elapsed time.}
   }
 
   \seealso{\code{\link{slider.mts}}.}
 
   \references{
+    Vinod, H.D. (2013), Maximum Entropy Bootstrap Algorithm Enhancements. 
+    \href{http://ssrn.com/abstract=2285041}{http://ssrn.com/abstract=2285041}.
+
     Vinod, H.D. (2006), Maximum Entropy Ensembles for Time Series Inference in Economics,
 \emph{Journal of Asian Economics}, \bold{17}(6), pp. 955-978
 

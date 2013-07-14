@@ -72,16 +72,18 @@ and stochastic dominance, \emph{Journal of Empirical Finance}, \bold{11}(3), pp.
 }
 
 \examples{
-library(strucchange)
+## Not run: 
+library("ConvergenceConcepts")
+library("strucchange")
 data("PhillipsCurve")
-
+\dontrun{
 uk <- window(PhillipsCurve, start = 1948)
 attach(data.frame(uk))
 y <- uk[,5]
 bigx <- cbind(dp1,du,u1) # collect all regressors
 reg1 <- lm(y ~ bigx)
 coef(reg1)
-nover <- 16 # choose range allowing n=25, 26, .. , 40
+nover <- 16 # choose range allowing n=25, 26, ..., 40
 
 # the following step will take some time to run
 
@@ -122,6 +124,7 @@ suas$coef
 # slope coeff. should be negative in sign for convergence
 # the t statistic on the slope coefficient should be large
 }
-
+## End(Not run)
+}
 \keyword{ts}
 

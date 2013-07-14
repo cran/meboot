@@ -8,7 +8,7 @@
 
   \usage{
     meboot.pdata.frame (x, reps=999, trim=0.10, reachbnd=TRUE,
-      expand.sd=TRUE, force.clt=TRUE, elaps=FALSE,
+      expand.sd=TRUE, force.clt=TRUE, scl.adjustment = FALSE, sym = FALSE, elaps=FALSE,
       colsubj, coldata, coltimes, ...)
   }
 
@@ -20,6 +20,9 @@
     }
     \item{expand.sd}{logical. If TRUE the standard deviation in the ensemble in expanded. See \code{\link{expand.sd}}.}
     \item{force.clt}{logical.If TRUE the ensemble is forced to satisfy the central limit theorem. See \code{\link{force.clt}}.}
+    \item{scl.adjustment}{logical. If \code{TRUE} scale adjustment is performed 
+       to ensure that the population variance of the transformed series equals the variance of the data.}
+    \item{sym}{logical. If \code{TRUE} an adjustment is peformed to ensure that the ME density is symmetric.}
     \item{elaps}{logical. If TRUE elapsed time during computations is displayed.}
     \item{colsubj}{the column in \code{x} that contains the individual index.}
     \item{coldata}{the column in \code{x} that contains the data of the variable to create the ensemble.}
