@@ -1,6 +1,6 @@
 
 zero.ci <- function(x, confl=0.05)
-{   
+{
   bigj <- length(x)
   yle <- x[x<=0]  #le=less than or equal to 
   m1 <- length(yle)
@@ -24,4 +24,3 @@ zero.ci <- function(x, confl=0.05)
 
   list(bnlo=bnlo, bnup=bnup, lolim=lolim, uplim=uplim)
 }
-

@@ -7,7 +7,7 @@
   }
 
   \usage{
-    meboot (x, reps=999, trim=0.10, reachbnd=TRUE,
+    meboot (x, reps=999, trim=list(trim=0.10, xmin=NULL, xmax=NULL), reachbnd=TRUE,
   expand.sd=TRUE, force.clt=TRUE, scl.adjustment = FALSE, sym = FALSE,
   elaps=FALSE, colsubj, coldata, coltimes, ...)
   }
@@ -15,7 +15,8 @@
   \arguments{
     \item{x}{vector of data, \code{ts} object or \code{pdata.frame} object.}
     \item{reps}{number of replicates to generate.}
-    \item{trim}{the trimming proportion.}
+    \item{trim}{a list object containing the elements: \code{trim}, the trimming proportion;
+\code{xmin}, the lower limit for left tail and \code{xmax}, the upper limit for right tail.}
     \item{reachbnd}{logical. If \code{TRUE} potentially reached bounds (xmin = smallest value - trimmed mean and xmax=largest value + trimmed mean) are given when the random draw happens to be equal to 0 and 1, respectively.}
     \item{expand.sd}{logical. If \code{TRUE} the standard deviation in the ensemble in expanded. See \code{\link{expand.sd}}.}
     \item{force.clt}{logical. If \code{TRUE} the ensemble is forced to satisfy the central limit theorem. See \code{\link{force.clt}}.}
@@ -42,6 +43,18 @@
      }
 
    The scale and symmetry adjustments are described in Vinod (2013) referenced below.
+
+   In some applications, the ensembles must be ensured to be non-negative. 
+   Setting \code{trim$xmin = 0} ensures positive values of the ensembles. It also
+   requires \code{force.clt = FALSE} and \code{expand.sd = FALSE}. These arguments are 
+   set to \code{FALSE} if \code{trim$xmin = 0} is defined and a warning is returned 
+   to inform that the value of those arguments were overwritten.
+   Note: The choice of \code{xmin} and \code{xmax} cannot be arbitrary and should be 
+   cognizant of \code{range(x)} in data. Otherwise, if there are observations outside those 
+   bounds, the limits set by these arguments may not be met.
+   If the user is concerned only with the trimming proportion, then it can be passed as argument 
+   simply \code{trim = 0.1} and the default values for \code{xmin} and \code{xmax} will be used.
+   
   }
 
   \value{
@@ -53,7 +66,7 @@
     \item{dvtrim}{trimmed mean of dv.}
     \item{xmin}{data minimum for ensemble=xx[1]-dvtrim.}
     \item{xmax}{data x maximum for ensemble=xx[n]+dvtrim.}
-    \item{desintxb}{desired inteval means.}
+    \item{desintxb}{desired interval means.}
     \item{ordxx}{ordered x values.}
     \item{kappa}{scale adjustment to the variance of ME density.}
     \item{elaps}{elapsed time.}

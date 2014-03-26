@@ -5,17 +5,29 @@
 #  UseMethod("meboot", x)
 #}
 
-meboot <- function(x, reps=999, trim=0.10, reachbnd=TRUE,
+meboot <- function(x, reps=999, trim=list(trim=0.10, xmin=NULL, xmax=NULL), reachbnd=TRUE,
   expand.sd=TRUE, force.clt=TRUE, 
   scl.adjustment = FALSE, sym = FALSE, elaps=FALSE, 
   colsubj, coldata, coltimes,...)
 {
   if ("pdata.frame" %in% class(x))
   {
-     res <- meboot.pdata.frame (x, reps, trim, reachbnd,
+     res <- meboot.pdata.frame (x, reps, trim$trim, reachbnd,
       expand.sd, force.clt, scl.adjustment, sym, elaps,
       colsubj, coldata, coltimes, ...)
      return(res)
+  }
+
+  if (reps == 1 && isTRUE(force.clt))
+  {
+    force.clt <- FALSE
+    warning("force.clt was set to FALSE since the esemble contains only one replicate.")
+  }
+
+  if (!is.list(trim)) {
+    trimval <- trim
+  } else {
+    trimval <- if (is.null(trim$trim)) 0.1 else trim$trim
   }
 
   ptm1 <- proc.time()
@@ -49,9 +61,51 @@ meboot <- function(x, reps=999, trim=0.10, reachbnd=TRUE,
   # Thus the tails are uniform distributed.
 
   dv <- abs(diff(as.numeric(x)))
-  dvtrim <- mean(dv, trim=trim)
-  xmin <- xx[1] - dvtrim
-  xmax <- xx[n] + dvtrim
+  dvtrim <- mean(dv, trim=trimval)
+
+  if (is.list(trim))
+  {
+    if (is.null(trim$xmin))
+    {
+      xmin <- xx[1] - dvtrim
+    } else
+      xmin <- trim$xmin
+
+    if (is.null(trim$xmax))
+    {
+      xmax <- xx[n] + dvtrim
+    } else
+      xmax <- trim$xmax
+
+    if (!is.null(trim$xmin) || !is.null(trim$xmax))
+    {
+      if (isTRUE(force.clt))
+      {
+        expand.sd <- FALSE
+        force.clt <- FALSE
+        warning("expand.sd and force.clt were set to FALSE in order to ",
+          "enforce the limits xmin/xmax.")
+      }
+    }
+  } else {
+    xmin <- xx[1] - dvtrim
+    xmax <- xx[n] + dvtrim
+  }
+
+  # do this here so that this warnings are printed after
+  # the above warnings (if necessary)
+
+  if (is.list(trim))
+  {
+    if (!is.null(trim$xmin) && trim$xmin > min(x))
+      warning("the lower limit trim$xmin may not be satisfied in the replicates ",
+       "since it is higher than the minimum value observed ",
+       "in the input series x")
+    if (!is.null(trim$xmax) && trim$xmax < max(x))
+      warning("the upper limit trim$xmax may not be satisfied in the replicates ",
+       "since it is lower than the maximum value observed ",
+       "in the input series x")
+  }
 
   # Compute the mean of the maximum entropy density within each
   # interval in such a way that the 'mean preserving constraint'
