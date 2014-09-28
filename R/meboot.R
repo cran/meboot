@@ -21,7 +21,7 @@ meboot <- function(x, reps=999, trim=list(trim=0.10, xmin=NULL, xmax=NULL), reac
   if (reps == 1 && isTRUE(force.clt))
   {
     force.clt <- FALSE
-    warning("force.clt was set to FALSE since the esemble contains only one replicate.")
+    warning("force.clt was set to FALSE since the ensemble contains only one replicate.")
   }
 
   if (!is.list(trim)) {

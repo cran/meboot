@@ -72,8 +72,6 @@
     \item{elaps}{elapsed time.}
   }
 
-  \seealso{\code{\link{slider.mts}}.}
-
   \references{
     Vinod, H.D. (2013), Maximum Entropy Bootstrap Algorithm Enhancements. 
     \href{http://ssrn.com/abstract=2285041}{http://ssrn.com/abstract=2285041}.

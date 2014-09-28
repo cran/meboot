@@ -3,7 +3,7 @@ useDynLib(meboot)
 
 export(expand.sd, elapsedtime, flexMeboot, force.clt,
   meboot, meboot.part, meboot.pdata.frame,    
-  null.ci, olsHALL.b, slider.mts, checkConv, zero.ci)
+  null.ci, olsHALL.b, checkConv, zero.ci)
 
 import(dynlm)
 import(nlme)

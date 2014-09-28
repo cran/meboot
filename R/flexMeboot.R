@@ -20,13 +20,13 @@ flexMeboot <- function(x, reps = 9, segment = 5,
     if (i == m)
       y <- x[ii:n]
 
-    reg1 <- lm(y~seq(length(y))) #regress on tim= 1,2,3,4, 5
+    reg1 <- lm(y~seq(along=y)) #regress on tim= 1,2,3,4, 5
     b <- coef(reg1)[2]
     B <- b
     if (length(myseq) > 1) 
       B <- sample(myseq)[1]*b
 
-    newy <- coef(reg1)[1]+ B * (1:length(y)) + resid(reg1)
+    newy <- coef(reg1)[1]+ B * seq(along=y) + resid(reg1)
     men <- meboot(x=newy,reps=reps,force.clt=forc)$ensemble
 
     if (i < m) 
