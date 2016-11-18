@@ -1,5 +1,5 @@
-f70f163c83470ee1240c0aabfeee0c16 *DESCRIPTION
-9a11fb4d8506e6c0ff169e2c2b80c69f *NAMESPACE
+957f62e4ad61389312f4bbc50c1e8389 *DESCRIPTION
+e5f0800a464021bf5bc3d0ce6e2ce169 *NAMESPACE
 799c330299b58314c5a4635ab06a96e8 *R/checkConv.R
 e5cdf19bd3dafe23dd8d1ee4a3ec5ddd *R/expand.sd.R
 033a26aacd292375606c92e584e1685f *R/flexMeboot.R
@@ -9,15 +9,17 @@ e5cdf19bd3dafe23dd8d1ee4a3ec5ddd *R/expand.sd.R
 f9ca7baabfb900c10cecbe6caf92fc49 *R/olsHALL.b.R
 4ec56f6015642ea34ab8d7ff628ceb3a *R/panel.meboot.R
 0899c22f0b821b69542c3a04e1ca8625 *R/zero.ci.R
+a4387b872cc85fa150562b39023cd75a *build/vignette.rds
 ab13054bed95c4d4267c454767621258 *data/USconsum.rda
 5667d5081c7464899b59bf9062a1ba59 *data/USfygt.rda
 1bf313c58fc91efcf2812d1429ff4d47 *data/ullwan.rda
 cbd96032fe463d630905c62bbebb9c6a *inst/CITATION
 f338253dc8020a29e0beb4f785158d29 *inst/doc/index.html
-8c0abea6f0a5c2a6363e289a65fe55a6 *inst/doc/meboot.pdf
+7ade47c7a897fa1694116b2d5e28a03c *inst/doc/meboot.Rnw
+9cbcadb781efe6cd297b460ccc5c13a8 *inst/doc/meboot.pdf
 3b194a48f20cefbf68068d788a3206a6 *man/USconsum.Rd
 db970b9d3e2a9825e39d867b1731c062 *man/USfygt.Rd
-9ff6b02d4c128553996e4dbf21c777dc *man/checkConv.Rd
+448c747f90f3fc7619d4917f7975a1f5 *man/checkConv.Rd
 91d4a965aeaeb9b1509d11ba5db9b8e9 *man/elapsedtime.Rd
 040f12efb072649683804fcb478d81d6 *man/expand.sd.Rd
 15e457f3244b924a94b20d468f05db3a *man/flexMeboot.Rd
@@ -30,3 +32,4 @@ e9f20d80a365503b6382cda5c5f209e7 *man/olsHALL.b.Rd
 380681663b5cc8af428cfc25eed93ff0 *man/ullwan.Rd
 b0ef7353819f5de504a97079f746f098 *man/zero.ci.Rd
 35034707d68bbf5dc06ca07170be7576 *src/mrapprox.c
+7ade47c7a897fa1694116b2d5e28a03c *vignettes/meboot.Rnw

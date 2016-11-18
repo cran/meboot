@@ -1,0 +1,18 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\selectlanguage{english}
+
+%\VignetteIndexEntry{meboot-vignette}
+%\VignetteKeyword{PDF}
+%\VignetteKeyword{HTML}
+%\VignetteKeyword{vignette}
+%\VignetteKeyword{time series, bootstrap}
+
+\title{}
+
+\begin{document}
+
+\maketitle
+
+\end{document}

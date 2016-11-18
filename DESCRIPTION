@@ -1,6 +1,6 @@
 Package: meboot
-Version: 1.4-6
-Date: 2015-06-09
+Version: 1.4-7
+Date: 2016-11-16
 Title: Maximum Entropy Bootstrap for Time Series
 Author: Hrishikesh D. Vinod <Vinod@fordham.edu> and Javier
         López-de-Lacalle
@@ -9,14 +9,12 @@ Encoding: UTF-8
 Depends: R (>= 3.0.0), dynlm, nlme
 Suggests: boot, car, ConvergenceConcepts, geepack, lmtest, strucchange,
         plm, zoo
-Description: This package performs maximum entropy density based
-        dependent data bootstrap. An algorithm is provided to create a
-        population of time series (ensemble) without assuming
-        stationarity. The reference paper (Vinod, H.D., 2004) explains
-        how the algorithm satisfies the ergodic theorem and the central
-        limit theorem.
+Description: Maximum entropy density based dependent data bootstrap. 
+  An algorithm is provided to create a population of time series (ensemble) 
+  without assuming stationarity. The reference paper (Vinod, H.D., 2004) explains
+  how the algorithm satisfies the ergodic theorem and the central limit theorem.
 License: GPL (>= 2)
 NeedsCompilation: yes
-Packaged: 2015-06-09 20:52:30 UTC; javlacalle
+Packaged: 2016-11-16 20:02:41 UTC; javlacalle
 Repository: CRAN
-Date/Publication: 2015-06-10 02:23:38
+Date/Publication: 2016-11-18 10:58:05
