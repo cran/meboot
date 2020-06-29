@@ -1,14 +1,15 @@
 
-useDynLib(meboot)
+useDynLib(meboot, .registration=TRUE)
 
 export("expand.sd", "elapsedtime", "flexMeboot", "force.clt",
-  "meboot", "meboot.part", "meboot.pdata.frame",    
+  "meboot", "meboot.part", "meboot.pdata.frame", "mebootSpear",
   "null.ci", "olsHALL.b", "checkConv", "zero.ci")
 
 importFrom("stats", 
-  "approx", "coef", "embed", "frequency", "is.ts",
-  "lm", "lm.fit", "qnorm", "quantile", "resid", "rnorm",
+  "approx", "coef", "cor", "embed", "fivenum", "frequency", "is.ts",
+  "lm", "lm.fit", "qnorm", "quantile", "optim", "resid", "rnorm",
   "runif", "sd", "start", "ts")
 
 import("dynlm")
 import("nlme")
+import("tdigest")
