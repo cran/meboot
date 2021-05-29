@@ -6,8 +6,8 @@
 #}
 
 meboot <- function(x, reps=999, trim=list(trim=0.10, xmin=NULL, xmax=NULL), reachbnd=TRUE,
-  expand.sd=TRUE, force.clt=TRUE, 
-  scl.adjustment = FALSE, sym = FALSE, elaps=FALSE, 
+  expand.sd=TRUE, force.clt=TRUE,
+  scl.adjustment = FALSE, sym = FALSE, elaps=FALSE,
   colsubj, coldata, coltimes,...)
 {
   if ("pdata.frame" %in% class(x))
@@ -156,7 +156,7 @@ meboot <- function(x, reps=999, trim=list(trim=0.10, xmin=NULL, xmax=NULL), reac
     uv <- (s1 + sum(v)) / n
     desired.sd <- sd(x)
     actualME.sd <- sqrt(uv)
-    if (actualME.sd <= 0) 
+    if (actualME.sd <= 0)
       stop("actualME.sd<=0 Error")
     out <- desired.sd / actualME.sd
     kappa <- out - 1
@@ -175,7 +175,7 @@ meboot <- function(x, reps=999, trim=list(trim=0.10, xmin=NULL, xmax=NULL), reac
   # Computation time
   ptm2 <- proc.time(); elapsr <- elapsedtime(ptm1, ptm2)
   if(elaps)
-    cat("\n  Elapsed time:", elapsr$elaps, 
+    cat("\n  Elapsed time:", elapsr$elaps,
                              paste(elapsr$units, ".", sep=""), "\n")
 
   list(x=x, ensemble=ensemble, xx=xx, z=z, dv=dv, dvtrim=dvtrim, xmin=xmin,
@@ -194,7 +194,7 @@ meboot.part <- function(x, n, z, xmin, xmax, desintxb, reachbnd)
   # ... 'p'-s within the (i1/n, (i1+1)/n)] interval (i1=1,...,n-2).
 
   q <- .C("mrapprox", p=as.double(p), n=as.integer(n), z=as.double(z),
-      desintxb=as.double(desintxb[-1]), ref23=double(n), qq=double(1), 
+      desintxb=as.double(desintxb[-1]), ref23=double(n), qq=double(1),
       q=double(n), PACKAGE="meboot")$q
 
   # ... 'p'-s within the [0, (1/n)] interval. (Left tail.)

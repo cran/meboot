@@ -88,7 +88,7 @@ Ph.D. student at Fordham University and author of an R package NNS.
     \href{https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3621614}{https://papers.ssrn.com/sol3/papers.cfm?abstract\_id=3621614}.
 
     Vinod, H.D. (2013), Maximum Entropy Bootstrap Algorithm Enhancements.
-    \href{http://ssrn.com/abstract=2285041}{http://ssrn.com/abstract=2285041}.
+    \href{https://www.ssrn.com/abstract=2285041}{https://www.ssrn.com/abstract=2285041}.
 
     Vinod, H.D. (2006), Maximum Entropy Ensembles for Time Series Inference in Economics,
 \emph{Journal of Asian Economics}, \bold{17}(6), pp. 955-978

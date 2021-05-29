@@ -5,7 +5,7 @@ export("expand.sd", "elapsedtime", "flexMeboot", "force.clt",
   "meboot", "meboot.part", "meboot.pdata.frame", "mebootSpear",
   "null.ci", "olsHALL.b", "checkConv", "zero.ci")
 
-importFrom("stats", 
+importFrom("stats",
   "approx", "coef", "cor", "embed", "fivenum", "frequency", "is.ts",
   "lm", "lm.fit", "qnorm", "quantile", "optim", "resid", "rnorm",
   "runif", "sd", "start", "ts")
@@ -13,3 +13,4 @@ importFrom("stats",
 import("dynlm")
 import("nlme")
 import("tdigest")
+import("hdrcde")

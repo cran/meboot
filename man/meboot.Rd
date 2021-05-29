@@ -20,7 +20,7 @@
     \item{reachbnd}{logical. If \code{TRUE} potentially reached bounds (xmin = smallest value - trimmed mean and xmax=largest value + trimmed mean) are given when the random draw happens to be equal to 0 and 1, respectively.}
     \item{expand.sd}{logical. If \code{TRUE} the standard deviation in the ensemble in expanded. See \code{\link{expand.sd}}.}
     \item{force.clt}{logical. If \code{TRUE} the ensemble is forced to satisfy the central limit theorem. See \code{\link{force.clt}}.}
-    \item{scl.adjustment}{logical. If \code{TRUE} scale adjustment is performed 
+    \item{scl.adjustment}{logical. If \code{TRUE} scale adjustment is performed
        to ensure that the population variance of the transformed series equals the variance of the data.}
     \item{sym}{logical. If \code{TRUE} an adjustment is peformed to ensure that the ME density is symmetric.}
     \item{elaps}{logical. If \code{TRUE} elapsed time during computations is displayed.}
@@ -39,22 +39,22 @@
        \item Compute the mean of the maximum entropy density within each interval in such a way that the \emph{mean preserving constraint} is satisfied. (Denoted as \eqn{m_t} in the reference paper.) The first and last interval means have distinct formulas. See Theil and Laitinen (1980) for details.
        \item Generate random numbers from the [0,1] uniform interval and compute sample quantiles at those points.
        \item Apply to the sample quantiles the correct order to keep the dependence relationships of the observed data.
-       \item Repeat the previous steps several times (e.g. 999). 
+       \item Repeat the previous steps several times (e.g. 999).
      }
 
    The scale and symmetry adjustments are described in Vinod (2013) referenced below.
 
-   In some applications, the ensembles must be ensured to be non-negative. 
+   In some applications, the ensembles must be ensured to be non-negative.
    Setting \code{trim$xmin = 0} ensures positive values of the ensembles. It also
-   requires \code{force.clt = FALSE} and \code{expand.sd = FALSE}. These arguments are 
-   set to \code{FALSE} if \code{trim$xmin = 0} is defined and a warning is returned 
+   requires \code{force.clt = FALSE} and \code{expand.sd = FALSE}. These arguments are
+   set to \code{FALSE} if \code{trim$xmin = 0} is defined and a warning is returned
    to inform that the value of those arguments were overwritten.
-   Note: The choice of \code{xmin} and \code{xmax} cannot be arbitrary and should be 
-   cognizant of \code{range(x)} in data. Otherwise, if there are observations outside those 
+   Note: The choice of \code{xmin} and \code{xmax} cannot be arbitrary and should be
+   cognizant of \code{range(x)} in data. Otherwise, if there are observations outside those
    bounds, the limits set by these arguments may not be met.
-   If the user is concerned only with the trimming proportion, then it can be passed as argument 
+   If the user is concerned only with the trimming proportion, then it can be passed as argument
    simply \code{trim = 0.1} and the default values for \code{xmin} and \code{xmax} will be used.
-   
+
   }
 
   \value{
@@ -73,8 +73,8 @@
   }
 
   \references{
-    Vinod, H.D. (2013), Maximum Entropy Bootstrap Algorithm Enhancements. 
-    \href{http://ssrn.com/abstract=2285041}{http://ssrn.com/abstract=2285041}.
+    Vinod, H.D. (2013), Maximum Entropy Bootstrap Algorithm Enhancements.
+    \href{https://www.ssrn.com/abstract=2285041}{https://www.ssrn.com/abstract=2285041}.
 
     Vinod, H.D. (2006), Maximum Entropy Ensembles for Time Series Inference in Economics,
 \emph{Journal of Asian Economics}, \bold{17}(6), pp. 955-978
