@@ -1,9 +1,4 @@
 
-#meboot <- function(x, reps=999, trim=0.10, reachbnd=TRUE,
-#  expand.sd=TRUE, force.clt=TRUE, elaps=FALSE,
-#  colsubj, coldata, coltimes, ...){
-#  UseMethod("meboot", x)
-#}
 
 meboot <- function(x, reps=999, trim=list(trim=0.10, xmin=NULL, xmax=NULL), reachbnd=TRUE,
   expand.sd=TRUE, force.clt=TRUE,
@@ -52,7 +47,7 @@ meboot <- function(x, reps=999, trim=list(trim=0.10, xmin=NULL, xmax=NULL), reac
 
   # Compute intermediate points on the sorted series.
 
-  z <- rowMeans(embed(xx, 2))
+  z <- (xx[-1] + xx[-n])/2
 
   # Compute lower limit for left tail ('xmin') and
   # upper limit for right tail ('xmax').
@@ -113,7 +108,7 @@ meboot <- function(x, reps=999, trim=list(trim=0.10, xmin=NULL, xmax=NULL), reac
   # The first and last interval means have distinct formulas.
   # See Theil and Laitinen (1980) for details.
 
-  aux <- colSums( t(embed(xx, 3))*c(0.25,0.5,0.25) )
+  aux <- colSums( t(cbind(xx[-c(1,2)], xx[-c(1,n)], xx[-c((n-1),n)]))*c(0.25,0.5,0.25) )
   desintxb <- c(0.75*xx[1]+0.25*xx[2], aux, 0.25*xx[n-1]+0.75*xx[n])
 
   # Generate random numbers from the [0,1] uniform interval and

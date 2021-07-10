@@ -10,6 +10,8 @@ importFrom("stats",
   "lm", "lm.fit", "qnorm", "quantile", "optim", "resid", "rnorm",
   "runif", "sd", "start", "ts")
 
+importFrom("utils", "head", "tail")
+
 import("dynlm")
 import("nlme")
 import("tdigest")

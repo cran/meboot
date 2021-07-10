@@ -1,12 +1,12 @@
 Package: meboot
-Version: 1.4-9
-Date: 2021-05-28
+Version: 1.4-9.1
+Date: 2021-07-10
 Title: Maximum Entropy Bootstrap for Time Series
 Author: Hrishikesh D. Vinod <Vinod@fordham.edu>, Javier
         López-de-Lacalle <javlacalle@yahoo.es>, and Fred Viole
 Maintainer: Fred Viole <fviole@fordham.edu>
 Encoding: UTF-8
-Depends: R (>= 3.0.0), dynlm, nlme, tdigest, hdrcde
+Depends: R (>= 3.5.0), dynlm, nlme, tdigest, hdrcde
 Suggests: boot, car, ConvergenceConcepts, geepack, lmtest, strucchange,
         plm, zoo
 Description: Maximum entropy density based dependent data bootstrap. 
@@ -16,6 +16,6 @@ Description: Maximum entropy density based dependent data bootstrap.
 License: GPL (>= 2)
 NeedsCompilation: yes
 RoxygenNote: 7.1.1
-Packaged: 2021-05-28 22:25:34 UTC; fredv
+Packaged: 2021-07-10 13:55:25 UTC; fredv
 Repository: CRAN
-Date/Publication: 2021-05-29 06:10:06 UTC
+Date/Publication: 2021-07-10 18:20:02 UTC
