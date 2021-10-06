@@ -1,4 +1,4 @@
-129cdf08ddb0f1ab1768c5f43d1aa2ed *DESCRIPTION
+657688a8beb62d2cc1b982a178864fe1 *DESCRIPTION
 23f8e63398e0d94568d622e452e84bfe *NAMESPACE
 799c330299b58314c5a4635ab06a96e8 *R/checkConv.R
 8748fe18b57682efe896c8bc1c327f2d *R/expand.sd.R
@@ -14,10 +14,10 @@ c004084be4cb89878810d952afa89f33 *build/vignette.rds
 ab13054bed95c4d4267c454767621258 *data/USconsum.rda
 5667d5081c7464899b59bf9062a1ba59 *data/USfygt.rda
 92a517b352bd1bb49f3bc8276f641328 *data/ullwan.rda
-2caa85de58142d086215d75f850289f5 *inst/CITATION
+1b5f89e7f976de5dc84d10ae5466590c *inst/CITATION
 8f72e1566f44d324e21b87a105de1be9 *inst/doc/meboot.R
 3a52e29baa9681fc190656a07ea010eb *inst/doc/meboot.Rnw
-3e1dc82d27f8180b74c15a877df6ed15 *inst/doc/meboot.pdf
+d388edb14dc1a6711382d53e8934c710 *inst/doc/meboot.pdf
 3b194a48f20cefbf68068d788a3206a6 *man/USconsum.Rd
 db970b9d3e2a9825e39d867b1731c062 *man/USfygt.Rd
 448c747f90f3fc7619d4917f7975a1f5 *man/checkConv.Rd
@@ -37,6 +37,6 @@ d16c61cf1417a59135517f17fd02ec6b *src/meboot_init.c
 35034707d68bbf5dc06ca07170be7576 *src/mrapprox.c
 ddf6c2f933f20dfdf77c8ca27e327871 *vignettes/airp1.pdf
 3a52e29baa9681fc190656a07ea010eb *vignettes/meboot.Rnw
-d904f99dda131920088dab85f4cb07ff *vignettes/meboot.bib
+cc6831c359e6837d04c2eb1f74551e0b *vignettes/meboot.bib
 788c3aadcdf1714470cbe8ed71d36bbd *vignettes/t5ex.pdf
 6beae680437707f431ca46097cb86cee *vignettes/t5ex_density.pdf

@@ -1,6 +1,6 @@
 Package: meboot
-Version: 1.4-9.1
-Date: 2021-07-10
+Version: 1.4-9.2
+Date: 2021-10-06
 Title: Maximum Entropy Bootstrap for Time Series
 Author: Hrishikesh D. Vinod <Vinod@fordham.edu>, Javier
         López-de-Lacalle <javlacalle@yahoo.es>, and Fred Viole
@@ -16,6 +16,6 @@ Description: Maximum entropy density based dependent data bootstrap.
 License: GPL (>= 2)
 NeedsCompilation: yes
 RoxygenNote: 7.1.1
-Packaged: 2021-07-10 13:55:25 UTC; fredv
+Packaged: 2021-10-06 04:30:06 UTC; fredv
 Repository: CRAN
-Date/Publication: 2021-07-10 18:20:02 UTC
+Date/Publication: 2021-10-06 05:10:02 UTC
