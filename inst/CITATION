@@ -1,8 +1,8 @@
 citHeader("To cite meboot in publications use:")
 
-citEntry(entry = "Article",
+bibentry(bibtype = "Article",
   title        = "Maximum Entropy Bootstrap for Time Series: The {meboot} {R} Package",
-  author       = personList(as.person("Hrishikesh D. Vinod"),
+  author       = c(as.person("Hrishikesh D. Vinod"),
                    as.person("Javier L\\'opez-de-Lacalle")),
   journal      = "Journal of Statistical Software",
   year         = "2009",
@@ -10,7 +10,6 @@ citEntry(entry = "Article",
   number       = "5",
   pages        = "1--19",
   doi          = "10.18637/jss.v029.i05",
-
   textVersion  =
   paste("Hrishikesh D. Vinod, Javier L\\'opez-de-Lacalle (2009).",
         "Maximum Entropy Bootstrap for Time Series: The meboot R Package.",

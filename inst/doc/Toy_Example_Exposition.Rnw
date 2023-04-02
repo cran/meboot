@@ -1,0 +1,448 @@
+%\VignetteIndexEntry{Maximum Entropy Bootstrap for Time Series: Toy Example Exposition}
+
+
+\documentclass{article}
+
+
+
+\usepackage{multirow,thumbpdf}
+\usepackage{amsmath, color}
+
+\begin{document}
+\SweaveOpts{keep.source=TRUE}
+\SweaveOpts{concordance=FALSE}
+
+\DefineVerbatimEnvironment{Sinput}{Verbatim}{formatcom={\color{red}}}
+\DefineVerbatimEnvironment{Soutput}{Verbatim}{formatcom={\color{blue}}}
+
+\author{Hrishikesh D. Vinod\\Fordham University}
+\title{Maximum Entropy Bootstrap for Time Series: Toy Example Exposition}
+\maketitle
+
+\section*{Toy Example}
+
+The Maximum Entropy Bootstrap is illustrated with a small example. Let the sequence $x_t = (4, 12, 36, 20, 8)$ be the series of data observed from the period $t = 1$ to $t = 5$ as indicated in the first two columns in Table 1. We jointly sort these two columns on the second column and place the result in the next two columns (Table 2 columns 3 and 4), giving us the ordering index vector in column 3.
+
+Next, the four intermediate points in Column 5 are seen to be simple averages of consecutive order statistics. We need two more (limiting) "intermediate" points. These are obtained as described in Step 3 above. Using 10\% trimming, the limiting intermediate values are $z_0 = -11$ and $z_T = 51$. With these six $z_t$ values we build our five half open intervals:
+$$U(-11, 6] \times U(6, 10] \times U(10, 16] \times U(16, 28] \times U(28, 51]$$
+
+The maximum entropy density of the ME bootstrap is defined as the combination of $T$ uniform densities defined over (the support of) $T$ half open intervals.
+
+\begin{table}[ht]
+\centering
+\small{
+\begin{tabular}{lllllllll}
+\\
+\hline
+\multirow{3}{0.7cm}{Time} & \multirow{3}{0.5cm}{$x_t$} &
+\multirow{3}{1.2cm}{Ordering vector} & \multirow{3}{1cm}{Sorted $x_t$} &
+\multirow{3}{1.3cm}{Interme-diate points} & \multirow{3}{1.3cm}{Desired means} &
+\multirow{3}{1.3cm}{Uniform draws} & \multirow{3}{1.3cm}{Preli-minary values} &
+\multirow{3}{1.3cm}{Final replicate} \\ \\ \\
+
+\hline
+\multicolumn{1}{c}{1} & \multicolumn{1}{c}{4} &
+\multicolumn{1}{c}{1} & \multicolumn{1}{c}{4} &
+\multicolumn{1}{c}{6} & \multicolumn{1}{c}{5} & \multicolumn{1}{c}{0.12} &
+\multicolumn{1}{c}{5.85} & \multicolumn{1}{c}{5.85} \\
+%
+\multicolumn{1}{c}{2} & \multicolumn{1}{c}{12} & \multicolumn{1}{c}{5} &
+\multicolumn{1}{c}{8} & \multicolumn{1}{c}{10} & \multicolumn{1}{c}{8} &
+\multicolumn{1}{c}{0.83} & \multicolumn{1}{c}{6.70} & \multicolumn{1}{c}{13.90} \\
+%
+\multicolumn{1}{c}{3} & \multicolumn{1}{c}{36} & \multicolumn{1}{c}{2} &
+\multicolumn{1}{c}{12} & \multicolumn{1}{c}{16} & \multicolumn{1}{c}{13} &
+\multicolumn{1}{c}{0.53} &
+\multicolumn{1}{c}{13.90} &\multicolumn{1}{c}{23.95} \\
+\multicolumn{1}{c}{4} & \multicolumn{1}{c}{20} & \multicolumn{1}{c}{4} &
+\multicolumn{1}{c}{20} & \multicolumn{1}{c}{28} & \multicolumn{1}{c}{22} &
+\multicolumn{1}{c}{0.59} & \multicolumn{1}{c}{15.70} & \multicolumn{1}{c}{15.70} \\
+%
+\multicolumn{1}{c}{5} & \multicolumn{1}{c}{8} & \multicolumn{1}{c}{3} &
+\multicolumn{1}{c}{36} & &
+\multicolumn{1}{c}{32} & \multicolumn{1}{c}{0.11} & \multicolumn{1}{c}{23.95} &
+\multicolumn{1}{c}{6.70} \\
+\hline
+\end{tabular}
+}
+\caption{\label{Tt5ex} Example of the ME bootstrap algorithm.}
+\end{table}
+
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=0.5\textwidth]{t5ex_density}
+\end{center}
+\caption{\label{Ft5ex.density} Maximum entropy density for the $x_t=4,12,36,20,8$ example.}
+\end{figure}
+
+
+<<>>=
+xx <- c(4,12,36,20,8) #original time series up and down shape
+trimprop <- 0.10 #trimming proportion
+reachbnd <- FALSE #reaching the bound of the range forced or  not?
+
+# uniform draws used as an example in Table 1 of the paper
+
+p <- c(0.12, 0.83, 0.53, 0.59, 0.11)
+
+n <- length(xx)
+
+x <- sort(xx)
+ordxx <- sort(xx, index.return=TRUE)
+print(c("ordxx=",ordxx)) #without the dollar ix appending
+
+print(c("ordxx$ix=",ordxx$ix))
+@
+
+
+\subsection*{Index Return = TRUE using \texttt{sort} command}
+
+The above use of the \texttt{sort} command with \texttt{index.return=TRUE} is worth learning.
+It will be used later to map from numerical magnitudes (values) domain to the
+time domain.  The use of \texttt{sort} with option  \texttt{index.return=TRUE} allows us
+to avoid explicit use of sorting on two columns of data.
+
+<<>>=
+x <- sort(xx)
+x #sorted magnitudes original xx data in values domain
+#embed good for getting a matrix with lagged values in the second column
+embed(1:4,2) #allows no worry about missing values with lags
+embed(x, 2) #apply embed to our sorted xx
+z <- rowMeans(embed(x, 2))
+z #these are intermediate values
+dv <- abs(diff(xx))
+dv #vector of absolute differences
+dvtrim <- mean(dv, trim=trimprop)
+dvtrim #trimmed mean of dv
+xmin <- x[1]-dvtrim
+xmax <- x[n]+dvtrim
+
+xmin #ultimate minimum for resampled data gives z_0
+xmax #ultimate maximum for resampled data gives z_T
+@
+
+\subsection*{\texttt{embed} command}
+
+R function \texttt{embed} Embeds the time series x into a low-dimensional Euclidean space.  We are using dimension=2 here.
+It gives lagged values in second column of a matrix without worrying about missing values.
+
+\texttt{dv} denotes the absolute difference between consecutive sorted values.
+
+\texttt{z} denotes intermediate values needed for defining half-open intervals $I_t = (z_{(t-1)},\, z_t]$.
+
+Unfortunately, the xmin ($z_0=-11$) and xmax ($z_T=51$) do not appear in the published Table.
+
+\section*{Mass and Mean Preserving Constraints satisfy ergodic theorem}
+
+A fraction $1/T$ of the mass of the probability distribution must lie in each
+interval.  meboot requires each half open interval $I_{t}$ to have an equal chance
+being included in the resample.
+
+
+$\Sigma x_{t}=\Sigma x_{(t)}=\Sigma m_{t}$, where $m_{t}$ denote the mean of
+$f(x)$ within the interval $I_{t}$.
+\textbf{mean preserving} constraint.
+\begin{subequations}
+\begin{align}
+f(x)&= 1/(z_{1}- z_{0}),\quad x \in I_{(1)},\quad
+m_{1}=0.75x_{(1)}+0.25x_{(2)},\\
+f(x)&=1/(z_{k}- z_{k-1}),\quad x \in (z_{k}- z_{k-1}],\\
+&\mbox{\qquad with mean}\quad m_{k}=0.25x_{(k-1)}+ 0.50x_{(k)}+0.25x_{(k +
+1)}\\
+& {\qquad\quad\ \rm for}\quad k= 2, \ldots , T-1,\\
+f(x)&= 1/(z_{T}-z_{T - 1}),\quad x \in I_{(T) },\quad m_{T}=0.25x_{(T -
+1)}+0.75x_{(T)}.
+\end{align}
+\end{subequations}
+
+The weights for the two observations at the left end interval are (0.75, 0.25)
+
+Note that the weights are (0.25, 0.50, and 0.25) for all intermediate intervals
+We have $T=5$ here leading to three intervals needing these weights.
+
+The weights for the two observations at the right end interval are (0.25, 0.75)
+
+\section*{Properties of uniform density}
+
+If the range of continuous uniform random variable are \texttt{a} to \texttt{b}
+the density of uniform is f( 1/(b-a))
+
+Mean of uniform is (a+b)/2
+
+We have used maximum entropy principle to say that the densities
+between the intermediate points $z_0$  to $z_T$ are all uniform.
+
+The desired means for our toy example with order \texttt{stats}=(4,8,12,20,36) are
+
+(6+10)/2=8,  (10+16)/2=13,  (16+28)/2=22 for intermediate intervals
+
+For the left extreme we use $0.75*x_{(1)}+0.25*x_{(2)}$=0.75*4+0.25*8=5
+
+For the right extreme interval desired mean is $0.25*x_{(T-1)}+0.75*x_{(T)}$
+0.25*20+0.75*36=32
+
+see last table column entitled \texttt{desintxb} with entries (5,8,13,22,32)
+
+\section*{\texttt{embed} helps achieve desired means $m_t$ of the $T$ intervals}
+
+It is worth learning how three dimensional \texttt{embed} function of R works with
+this toy example where we are considering mean of 3 consecutive values, except
+for the two intervals at the two ends of the series.
+<<>>=
+embed(1:5,3) #embeding 1:5 gives 3 by 3 matrix
+#Note j-th column has lag=j-1 values.  Col.2 has lag 1
+#Note embed retains only non-missing lag values
+x
+t(embed(x,3))# transpose embed matrix
+t(embed(x, 3))*c(0.25,0.5,0.25) #multiply by weights
+t(t(embed(x, 3))*c(0.25,0.5,0.25)) #transpose twice to get back
+@
+
+
+Next we compute the row sum of above and call it a vector \texttt{aux}.
+This applies to intermediate intervals not the extreme
+intervals a the bottom end and at the top end, where one
+needs to average only two intermediate values with weights 0.75 and 0.25.
+
+
+
+<<>>=
+aux <- rowSums( t( t(embed(x, 3))*c(0.25,0.5,0.25) ) )
+
+aux #these are only 3
+#append the means of two extreme intervals at the two ends
+desintxb <- c(0.75*x[1]+0.25*x[2], aux, 0.25*x[n-1]+0.75*x[n])
+desintxb# des=desired, int=interval, xb=xbar=means
+desintxb  #desired means  5  8 13 22 32,  Now 5 as desired
+print( "mean(xx),mean(desintxb),mean(x)") #all=16
+print(c(mean(xx),mean(desintxb), mean(x)))
+@
+
+
+The above shows that the \textbf{mean preserving constraint} is satisfied,
+since the mean of data and mean of desired means equal the same number 16.
+This is no accident, but achieved by designed weights which force the desired means of each interval
+to be based on the $x_t$ data.  This helps ensure that the ergodic theorem is satisfied by our resamples.
+
+
+
+\section*{Drawing random quantile $q_t\in [z_0,z_T]$ from empirical cumulative ME density$\in [0,1]$}
+
+Given empirical cdf of ME density consisting of uniform patches, we just
+draw 999 realizations of iid uniform in the values domain.  For example,
+a random draw of uniform between 0 to 1 illustrated in the toy example is:
+
+\texttt{p}=c(0.12, 0.83, 0.53, 0.59, 0.11)
+
+I wish I had included an additional column for sorted uniform draws
+\texttt{pp}=(0.11, 0.12, 0.53, 0.59, 0.83) in the published paper for clearer exposition. A complete
+table is included toward the end of this document.
+
+
+<<>>=
+q=rep(0,n) #place holder for q
+pp=sort(p) #sorted random draws
+print(c("sorted random draws", pp))
+@
+
+In traditional iid bootstrap each $x_t$ has 1/T (if we have $T$ observations) chance of being included
+in the resample.  Of course, some $x_t$ might repeat and
+some may not be present in some individual realizations of the random draws from the uniform density.
+Imposing similar requirement in meboot algorithm is called satisfying \textbf{mass preserving constraint} in the paper.
+
+
+If the uniform random variable is defined over the range [a,b], then
+the its mean is (a+b)/2.
+The first interval is $(-11,6]$ with width 17 and mean $-5/2$.
+Since we have T=5 observations in the toy example, each interval
+should have 1/5 =0.2 probability of being included in the resample.
+
+The sorted random draws are (0.11, 0.12,
+0.53, 0.59, 0.83).  the numbers
+having the pp values less than 0.2 (=1/n or 1/T) are two numbers: 0.11 and 0.12.
+First we use the \texttt{approx} function to interpolate in $I_1$ interval to get the
+corresponding two interpolated value qq=$-1.65, -0.8$.
+These do \textbf{not} satisfy the mean preserving constraint.  They
+need to be adjusted by adding the adjustment 7.5 (calculated above) to yield
+5.85 and 6.7 as the two quantiles of the ME density associated with the first two
+sorted random draws 0.11 and 0.12.
+
+<<>>=
+z[1] #first intermediate value
+xmin #smallest
+0.5*(z[1]+xmin) #average for the first interval
+desintxb[1] #des=desired, int=interval, xb=xbar=mean
+desintxb[1]-0.5*(z[1]+xmin)#adjustment for first interval
+@
+
+
+Thus the first interval adjustment 7.5 must be added so that
+the mean equals the desired value so that eventually we satisfy
+mean preserving constraint.
+
+Now we turn to random draw(s) which happen to be less than
+or equal to (1/T=1/5), which will come
+from the first half open interval $I_1=(z_0, z_1]$.
+
+\section*{R commands \texttt{approx} (linear interpolate) and \texttt{which}}
+
+<<>>=
+ref1 <- which(pp <= (1/n)) #how many are less than or equal to 1/5 if n=T=5
+ref1
+# approx. returns list of points which linearly interpolate given data points,
+#first interval ref1
+
+if(length(ref1)>0){
+  qq <- approx(c(0,1/n), c(xmin,z[1]), pp[ref1])$y
+  qq #interpolated values
+adj= desintxb[1]-0.5*(z[1]+xmin)
+print(c("qq=",qq,"adj=",adj))
+  q[ref1] <- qq
+  if(!reachbnd)  q[ref1] <- qq + desintxb[1]-0.5*(z[1]+xmin)
+}
+
+print(c("qq=",qq))
+print(c("q",q))
+@
+
+\section*{Second, Third and Fourth intervals}
+
+In our example sorted random draws are \texttt{pp}
+=(0.11 0.12 0.53 0.59 0.83) and the relevant range limits are
+(0, 0.2, 0.4, 0.6, 0.8, 1.0).  Clearly the first two \texttt{pp}
+values are in the first interval 0 to 0.2 discussed above.
+
+
+
+The second interval is $I_2=(6, 10]$ with width 4 and mean $8$ for sorted \texttt{pp}
+in (1/T, 2/T]. None of our \texttt{pp}=(0.11 0.12 0.53 0.59 0.83) is
+between 0.2 and 0.4.
+
+
+Two \texttt{pp} values 0.53 and 0.59 are both in the range
+0.4 to 0.6 from which there is no random draw.
+The next  second range of probabilities is 0.2 to 0.4
+and no draw in the range 06 to 0.8.
+
+The third interval is $I_3=(10, 16]$ with width 6 and mean $13$ for sorted \texttt{pp}
+in (2/T, 3/T].  After interpolation and adjustment, corresponding two quantile values are 13.9 and 15.7.
+
+The fourth interval is $(16, 28]$ with width 12 and mean $22$ for sorted \texttt{pp}
+in (3/T, 4/T]. No random draw here.
+
+
+<<>>=
+for(i1 in 1:(n-2)){
+  ref2 <- which(pp > (i1/n))
+print(c("ref2",ref2,"pp[ref2]", pp[ref2]))
+  ref3 <- which(pp <= ((i1+1)/n))
+print(c("ref3",ref3))
+  ref23 <- intersect(ref2, ref3)
+print(c("ref23",ref23,"sorted draw pp[ref23]=",pp[ref23]))
+
+  if(length(ref23)>0){
+    qq <- approx(c(i1/n,(i1+1)/n), c(z[i1], z[i1+1]), pp[ref23])$y
+print(c("interpolated value qq=",qq))
+adj= desintxb[-1][i1]-0.5*(z[i1]+z[i1+1])
+print(c("qq=",qq,"adj=",adj))
+    q[ref23] <- qq + desintxb[-1][i1]-0.5*(z[i1]+z[i1+1])
+print(c("q",q))
+  }
+}
+@
+
+We find that the adjustment to interpolated value above is zero.
+
+\section*{Interval called \texttt{ref4} if \texttt{pp} exactly equals 4/5  (n-1)/n is empty.}
+<<>>=
+ref4 <- which(pp == ((n-1)/n))
+print(c("ref4", ref4))
+if(length(ref4)>0)
+  q[ref4] <- z[n-1]
+q
+@
+
+\section*{Last interval,  fifth here, is called \texttt{ref5}}
+
+Note that the last interval interpolated value \texttt{qq} is 31.45 and we adjust it by \texttt{adj=-7.5}
+to yield 23.95.  Recall that the adjustment is designed to ensure the \textbf{ergodic
+theorem} is numerically satisfied by the meboot algorithm.
+
+<<>>=
+ref5 <- which(pp > ((n-1)/n))
+if(length(ref5)>0){
+print(c("ref5",ref5,"pp[ref5]=",pp[ref5]))
+  qq <- approx(c((n-1)/n,1), c(z[n-1],xmax), pp[ref5])$y
+print(c("interpolated value qq in last interval",qq))
+  q[ref5] <- qq   # this implicitly shifts xmax for algorithm
+adj=desintxb[n]-0.5*(z[n-1]+xmax)
+print(c("qq=",qq,"adj=",adj))
+
+  if(!reachbnd)  q[ref5] <- qq + desintxb[n]-0.5*(z[n-1]+xmax)
+}
+@
+
+
+\section*{Now wrap up the entire calculation of meboot for toy example}
+
+Following code maps the \texttt{q} vector from values domain to the time domain
+by using the sort function with the option \texttt{index.return=TRUE} noted above.
+
+We set \texttt{q[ordxx\$ix]} as sorted \texttt{q} denoted by \texttt{qseq} in the values domain.
+
+
+<<>>=
+prel=q #preliminary quantile values
+qseq <- sort(q)
+print(c("sorted q",qseq))
+q[ordxx$ix] <- qseq
+print(c("after mapping to time domain",q))
+
+print(q)
+@
+
+
+Now we produce the table.
+
+<<>>=
+Tim=1:5
+xt=xx #notation xt for original data
+xordstat=x #order stats
+ord1=ordxx$ix #output of sort
+intermed=c(z,xmax)  #these are zt
+prel
+qseq #sorted quantiles
+final=q #final quantiles of ME density
+cb=cbind(Tim,xt,xordstat,ord1,intermed,desintxb, p,pp,prel,final)
+@
+
+
+\newpage
+<< eval=FALSE>>=
+require(xtable)
+options(xtable.comment = FALSE)
+print(xtable(cb))
+@
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrrrrrrrr}
+  \hline
+ & Tim & xt & xordstat & ord1 & intermed & desintxb & p & pp & prel & final \\
+  \hline
+1 & 1.00 & 4.00 & 4.00 & 1.00 & 6.00 & 5.00 & 0.12 & 0.11 & 5.85 & 5.85 \\
+  2 & 2.00 & 12.00 & 8.00 & 5.00 & 10.00 & 8.00 & 0.83 & 0.12 & 6.70 & 13.90 \\
+  3 & 3.00 & 36.00 & 12.00 & 2.00 & 16.00 & 13.00 & 0.53 & 0.53 & 13.90 & 23.95 \\
+  4 & 4.00 & 20.00 & 20.00 & 4.00 & 28.00 & 22.00 & 0.59 & 0.59 & 15.70 & 15.70 \\
+  5 & 5.00 & 8.00 & 36.00 & 3.00 & 51.00 & 32.00 & 0.11 & 0.83 & 23.95 & 6.70 \\
+   \hline
+\end{tabular}
+\end{table}
+
+
+
+\bigskip
+I thank Fred Viole, director of the consulting firm OVVO Financial Systems specializing in analysis of stock market data for
+vastly improving an earlier draft version of this vignette.
+
+\end{document}

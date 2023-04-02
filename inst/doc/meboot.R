@@ -1,13 +1,13 @@
 ### R code from vignette source 'meboot.Rnw'
 
 ###################################################
-### code chunk number 1: meboot.Rnw:46-47
+### code chunk number 1: meboot.Rnw:49-50
 ###################################################
 options(prompt = "R> ", digits = 4, continue = "+  ")
 
 
 ###################################################
-### code chunk number 2: meboot.Rnw:388-398
+### code chunk number 2: meboot.Rnw:391-401
 ###################################################
 library("meboot")
 library("car")
@@ -22,7 +22,7 @@ durbinWatsonTest(model = lmcf, max.lag = 4)
 
 
 ###################################################
-### code chunk number 3: meboot.Rnw:458-463
+### code chunk number 3: meboot.Rnw:461-466
 ###################################################
 theta <- function(y, x) {
   reg <- dynlm(y ~ L(y, 1) + L(x, 1))
@@ -32,7 +32,7 @@ theta <- function(y, x) {
 
 
 ###################################################
-### code chunk number 4: meboot.Rnw:485-490
+### code chunk number 4: meboot.Rnw:488-493
 ###################################################
 theta.cobbd <- function(y, x1, x2) {
   reg <- lm(y ~ x1 + x2)
@@ -42,7 +42,7 @@ theta.cobbd <- function(y, x1, x2) {
 
 
 ###################################################
-### code chunk number 5: meboot.Rnw:520-536
+### code chunk number 5: meboot.Rnw:523-539
 ###################################################
 bstar.consu <- function(y, x, theta,
   level = 0.95, bigJ = 999, seed1 = 135) {
@@ -63,7 +63,7 @@ bstar.consu <- function(y, x, theta,
 
 
 ###################################################
-### code chunk number 6: meboot.Rnw:555-573
+### code chunk number 6: meboot.Rnw:558-576
 ###################################################
 bstar.cobbd <- function(y, x1, x2, theta = theta.cobbd,
   level = 0.95, bigJ = 999, seed1 = 135) {
@@ -86,7 +86,7 @@ bstar.cobbd <- function(y, x1, x2, theta = theta.cobbd,
 
 
 ###################################################
-### code chunk number 7: meboot.Rnw:590-607
+### code chunk number 7: meboot.Rnw:593-610
 ###################################################
 y <- USconsum[,2]
 x <- USconsum[,1]
@@ -116,7 +116,7 @@ hdr.den(b3s, main = expression(Highest ~ density ~ region ~
 
 
 ###################################################
-### code chunk number 9: meboot.Rnw:749-757
+### code chunk number 9: meboot.Rnw:752-760
 ###################################################
 library("plm")
 data("ullwan")
@@ -129,13 +129,13 @@ tail(ullwan)
 
 
 ###################################################
-### code chunk number 10: meboot.Rnw:772-773
+### code chunk number 10: meboot.Rnw:775-776
 ###################################################
 summary(lm(Price ~ LMV + Tb3))
 
 
 ###################################################
-### code chunk number 11: meboot.Rnw:815-820
+### code chunk number 11: meboot.Rnw:818-823
 ###################################################
 jboot <- 999
 set.seed(567)
@@ -145,7 +145,7 @@ Tb3.ens <- meboot(x = ullwan, reps = jboot, colsubj = 1, coldata = 6)
 
 
 ###################################################
-### code chunk number 12: meboot.Rnw:827-841
+### code chunk number 12: meboot.Rnw:830-844
 ###################################################
 slopeTb3 <- slopeLMV <- rep(0, jboot)
 for(j in 1:jboot) {
@@ -164,7 +164,7 @@ rbind(Percentile.Tb3, Refined.Tb3, Percentile.LMV, Refined.LMV)
 
 
 ###################################################
-### code chunk number 13: meboot.Rnw:861-873
+### code chunk number 13: meboot.Rnw:864-876
 ###################################################
 thetp <- plm(Price ~ LMV + Tb3, model = "pooling", data = ullwan)
 varTb3 <- thetp$vcov[3,3]
@@ -181,7 +181,7 @@ rbind(Percentile.Tb3, boot.percentile, boot.norm, boot.basic)
 
 
 ###################################################
-### code chunk number 14: meboot.Rnw:879-882
+### code chunk number 14: meboot.Rnw:882-885
 ###################################################
 znp <- pvcm(Price ~ LMV + Tb3, data = ullwan, model = "within")
 zplm <- plm(Price ~ LMV + Tb3, data = ullwan)
@@ -189,14 +189,14 @@ pooltest(zplm, znp)
 
 
 ###################################################
-### code chunk number 15: meboot.Rnw:898-900
+### code chunk number 15: meboot.Rnw:901-903
 ###################################################
 gir <- plm(Price ~ LMV + Tb3, data = ullwan, model = "random")
 coef(gir)
 
 
 ###################################################
-### code chunk number 16: meboot.Rnw:907-921
+### code chunk number 16: meboot.Rnw:910-924
 ###################################################
 slopeTb3 <- slopeLMV <- rep(0, jboot)
 for(j in 1:jboot) {
@@ -215,7 +215,7 @@ rbind(Percentile.Tb3, Refined.Tb3, Percentile.LMV, Refined.LMV)
 
 
 ###################################################
-### code chunk number 17: meboot.Rnw:930-940
+### code chunk number 17: meboot.Rnw:933-943
 ###################################################
 thetr <- plm(Price ~ LMV + Tb3, model = "random", data = ullwan)
 varTb3 <- thetr$vcov[3,3]

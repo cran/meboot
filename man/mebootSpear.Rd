@@ -85,7 +85,7 @@ Ph.D. student at Fordham University and author of an R package NNS.
 
   \references{
     Vinod, H.D. and Viole, F. (2020), Maximum Entropy Bootstrap and Improved Monte Carlo Simulations.
-    \href{https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3621614}{https://papers.ssrn.com/sol3/papers.cfm?abstract\_id=3621614}.
+    \href{https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3621614}{https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3621614}.
 
     Vinod, H.D. (2013), Maximum Entropy Bootstrap Algorithm Enhancements.
     \href{https://www.ssrn.com/abstract=2285041}{https://www.ssrn.com/abstract=2285041}.
