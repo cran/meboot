@@ -1,5 +1,6 @@
 \name{meboot}
  \alias{meboot}
+ \alias{meboot-package}
   \title{Generate Maximum Entropy Bootstrapped Time Series Ensemble}
 
   \description{

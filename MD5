@@ -1,4 +1,4 @@
-2a1a04fe9fb9d6b7bb5f73539a535984 *DESCRIPTION
+2c0c317a8053ed4bc0f2e680633b50ac *DESCRIPTION
 23f8e63398e0d94568d622e452e84bfe *NAMESPACE
 799c330299b58314c5a4635ab06a96e8 *R/checkConv.R
 8748fe18b57682efe896c8bc1c327f2d *R/expand.sd.R
@@ -18,10 +18,10 @@ fdd98ac4517ced19e5a5746c184ac5ef *inst/CITATION
 f46bd64dcd2175aa615ae2e764dd6305 *inst/compressPDF.R
 254ab539a85fafed9cfd99ddd6cbcec1 *inst/doc/Toy_Example_Exposition.R
 ce5f7793da779b14d9605789721138eb *inst/doc/Toy_Example_Exposition.Rnw
-40c29276e1c45eecc594aa55f2e3cde4 *inst/doc/Toy_Example_Exposition.pdf
+eee8de174ff96aa23e66f5bfbd8598e1 *inst/doc/Toy_Example_Exposition.pdf
 505f61a30e27dc1a7339267c41d690f7 *inst/doc/meboot.R
 7fbfa704a4ed9539e5275bb2882601f5 *inst/doc/meboot.Rnw
-ef6302e76d11a06cf1d4ee88a14ff8a1 *inst/doc/meboot.pdf
+9fa1bc5b6a41f66de99244495bcfdb8c *inst/doc/meboot.pdf
 3b194a48f20cefbf68068d788a3206a6 *man/USconsum.Rd
 db970b9d3e2a9825e39d867b1731c062 *man/USfygt.Rd
 448c747f90f3fc7619d4917f7975a1f5 *man/checkConv.Rd
@@ -29,7 +29,7 @@ db970b9d3e2a9825e39d867b1731c062 *man/USfygt.Rd
 040f12efb072649683804fcb478d81d6 *man/expand.sd.Rd
 db7ab3c3af831bee7f4f3a75a12adceb *man/flexMeboot.Rd
 53f1e80ec5b19efb4c5cf3277cc83cbd *man/force.clt.Rd
-9795cf368ff21baf2fc5d480746545da *man/meboot.Rd
+8e0fd5539c05508c131dc2f1d2e46ee5 *man/meboot.Rd
 dd1a73c634b5b3bd728045387cc37de7 *man/meboot.part.Rd
 69af5657d211299e594c3ded1cd09354 *man/meboot.pdata.frame.Rd
 7484f456abb04bb03e918fe61ceed514 *man/mebootSpear.Rd
